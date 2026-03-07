@@ -1,12 +1,5 @@
-import type { App } from "obsidian";
-import {
-  Component,
-  MarkdownRenderer,
-  PluginSettingTab,
-  SettingGroup,
-} from "obsidian";
+import { type App, PluginSettingTab, SettingGroup } from "obsidian";
 import type TypewriterModeLib from "@/lib";
-import fundingText from "@/texts/Funding.md" with { type: "text" };
 
 interface TabDefinition {
   description: string;
@@ -216,21 +209,6 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
           this.registerFeaturesInGroup(group, this.tm.features.maxChar);
         },
       },
-      {
-        id: "about",
-        label: "About",
-        description: "",
-        render: (container) => {
-          const fundingDiv = container.createDiv();
-          MarkdownRenderer.render(
-            this.app,
-            fundingText,
-            fundingDiv,
-            this.app.vault.getRoot().path,
-            new Component()
-          );
-        },
-      },
     ];
   }
 
@@ -249,12 +227,12 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
       this.activeTab = tabId;
       contentEl.empty();
 
-      for (const btn of tabBar.querySelectorAll(".tm-settings-tab")) {
+      Array.from(tabBar.querySelectorAll(".tm-settings-tab")).forEach((btn) => {
         btn.classList.toggle(
           "is-active",
           btn.getAttribute("data-tab-id") === tabId
         );
-      }
+      });
 
       const tab = tabs.find((t) => t.id === tabId);
       if (tab) {
