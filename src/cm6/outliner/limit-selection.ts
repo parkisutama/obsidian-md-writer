@@ -3,8 +3,8 @@ import {
   EditorState,
   type Transaction,
 } from "@codemirror/state";
-import { isZoomInEffect, type ZoomInEffect } from "./effects";
-import { getVisibleRange } from "./zoom-utils";
+import { isOutlinerFocusEffect, type OutlinerFocusEffect } from "./effects";
+import { getVisibleRange } from "./utils";
 
 function calculateLimitedSelection(
   selection: EditorSelection,
@@ -24,9 +24,9 @@ function calculateLimitedSelection(
   return shouldUpdate ? EditorSelection.create([newSel]) : null;
 }
 
-export const limitSelectionOnZoomIn = EditorState.transactionFilter.of(
+export const limitSelectionOnOutlinerFocus = EditorState.transactionFilter.of(
   (tr: Transaction) => {
-    const effect = tr.effects.find<ZoomInEffect>(isZoomInEffect);
+    const effect = tr.effects.find<OutlinerFocusEffect>(isOutlinerFocusEffect);
     if (!effect) {
       return tr;
     }
@@ -44,8 +44,8 @@ export const limitSelectionOnZoomIn = EditorState.transactionFilter.of(
   }
 );
 
-export const limitSelectionWhenZoomedIn = EditorState.transactionFilter.of(
-  (tr: Transaction) => {
+export const limitSelectionWhenOutlinerFocused =
+  EditorState.transactionFilter.of((tr: Transaction) => {
     if (!(tr.selection && tr.isUserEvent("select"))) {
       return tr;
     }
@@ -65,5 +65,4 @@ export const limitSelectionWhenZoomedIn = EditorState.transactionFilter.of(
     }
 
     return [tr, { selection: newSelection }];
-  }
-);
+  });

@@ -80,19 +80,19 @@ function renderBreadcrumbs(
   }
 ): HTMLElement {
   const header = doc.createElement("div");
-  header.classList.add("ptm-zoom-header");
+  header.classList.add("ptm-outliner-header");
 
   for (let i = 0; i < ctx.breadcrumbs.length; i++) {
     if (i > 0) {
       const delim = doc.createElement("span");
-      delim.classList.add("ptm-zoom-delimiter");
+      delim.classList.add("ptm-outliner-delimiter");
       delim.innerText = ">";
       header.append(delim);
     }
 
     const crumb = ctx.breadcrumbs[i];
     const link = doc.createElement("a");
-    link.classList.add("ptm-zoom-title");
+    link.classList.add("ptm-outliner-title");
     link.dataset.pos = String(crumb.pos);
     link.appendChild(doc.createTextNode(crumb.title));
     link.addEventListener("click", (e) => {

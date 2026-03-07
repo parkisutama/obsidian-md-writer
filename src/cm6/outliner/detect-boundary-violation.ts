@@ -1,7 +1,7 @@
 import { EditorState, type Transaction } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import { editorEditorField } from "obsidian";
-import { getHiddenRanges } from "./zoom-utils";
+import { getHiddenRanges } from "./utils";
 
 function analyzeBoundaries(
   tr: Transaction,

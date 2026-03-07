@@ -6,10 +6,13 @@ import {
   type ViewUpdate,
 } from "@codemirror/view";
 import { ItemView, Platform } from "obsidian";
+import {
+  dispatchOutlinerUnfocus,
+  isOutlinerFocused,
+} from "@/cm6/outliner/utils";
 import type { PerWindowProps } from "@/cm6/per-window-props";
 import type { TypewriterPositionData } from "@/cm6/typewriter-offset-calculator";
 import { TypewriterOffsetCalculator } from "@/cm6/typewriter-offset-calculator";
-import { dispatchZoomOut, isZoomedIn } from "@/cm6/zoom/zoom-utils";
 import type TypewriterModeLib from "@/lib";
 import { getActiveSentenceDecos } from "./highlight-sentence";
 import { getEditorDom, getScrollDom, getSizerDom } from "./selectors";
@@ -222,10 +225,10 @@ class TypewriterModeCM6Plugin {
     if (this.isDisabled()) {
       this.destroyCurrentLine();
       this.resetPadding(this.view);
-      // Zoom out if currently zoomed — zoom decorations persist on the StateField
+      // Unfocus outliner if currently focused — decorations persist on the StateField
       // and are not cleared by disabling the ViewPlugin
-      if (isZoomedIn(this.view.state)) {
-        dispatchZoomOut(this.view);
+      if (isOutlinerFocused(this.view.state)) {
+        dispatchOutlinerUnfocus(this.view);
       }
       this.loadPerWindowProps();
     } else {

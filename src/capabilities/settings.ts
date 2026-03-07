@@ -92,10 +92,10 @@ export interface ShowWhitespaceSettings {
   isShowWhitespaceEnabled: boolean;
 }
 
-export interface ZoomSettings {
-  isZoomBreadcrumbsEnabled: boolean;
-  isZoomEnabled: boolean;
-  isZoomOnClickEnabled: boolean;
+export interface OutlinerSettings {
+  isOutlinerBreadcrumbsEnabled: boolean;
+  isOutlinerEnabled: boolean;
+  isOutlinerOnClickEnabled: boolean;
 }
 
 export interface TypewriterModeSettings {
@@ -105,11 +105,11 @@ export interface TypewriterModeSettings {
   hemingwayMode: HemingwayModeSettings;
   keepLinesAboveAndBelow: KeepLinesAboveAndBelowSettings;
   maxChars: MaxCharsSettings;
+  outliner: OutlinerSettings;
   restoreCursorPosition: RestoreCursorPositionSettings;
   showWhitespace: ShowWhitespaceSettings;
   typewriter: TypewriterSettings;
   writingFocus: WritingFocusSettings;
-  zoom: ZoomSettings;
 }
 
 // Typesafe dotted-path type for accessing nested settings
@@ -220,10 +220,10 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
     isShowTrailingEnabled: true,
     isShowStrictLineBreakEnabled: true,
   },
-  zoom: {
-    isZoomEnabled: true,
-    isZoomOnClickEnabled: true,
-    isZoomBreadcrumbsEnabled: true,
+  outliner: {
+    isOutlinerEnabled: true,
+    isOutlinerOnClickEnabled: true,
+    isOutlinerBreadcrumbsEnabled: true,
   },
 };
 
@@ -448,7 +448,7 @@ function migrateSettings(
     },
     hemingwayMode: migrateHemingwaySettings(legacy),
     showWhitespace: { ...DEFAULT_SETTINGS.showWhitespace },
-    zoom: { ...DEFAULT_SETTINGS.zoom },
+    outliner: { ...DEFAULT_SETTINGS.outliner },
   };
 }
 
@@ -500,7 +500,30 @@ export async function applyStartupMigrations(
 
   // Deep-merge with defaults so new settings groups get their defaults
   // when existing users upgrade
-  const settings = rawData as Partial<TypewriterModeSettings>;
+  const settings = rawData as Partial<TypewriterModeSettings> & {
+    zoom?: {
+      isZoomEnabled?: boolean;
+      isZoomOnClickEnabled?: boolean;
+      isZoomBreadcrumbsEnabled?: boolean;
+    };
+  };
+
+  // Migrate zoom → outliner (introduced when zoom was renamed to outliner)
+  if ("zoom" in settings && !("outliner" in settings) && settings.zoom) {
+    const z = settings.zoom;
+    (settings as Record<string, unknown>).outliner = {
+      isOutlinerEnabled:
+        z.isZoomEnabled ?? DEFAULT_SETTINGS.outliner.isOutlinerEnabled,
+      isOutlinerOnClickEnabled:
+        z.isZoomOnClickEnabled ??
+        DEFAULT_SETTINGS.outliner.isOutlinerOnClickEnabled,
+      isOutlinerBreadcrumbsEnabled:
+        z.isZoomBreadcrumbsEnabled ??
+        DEFAULT_SETTINGS.outliner.isOutlinerBreadcrumbsEnabled,
+    };
+    (settings as Record<string, unknown>).zoom = undefined;
+  }
+
   const merged: TypewriterModeSettings = { ...DEFAULT_SETTINGS };
   for (const key of Object.keys(DEFAULT_SETTINGS) as Array<
     keyof TypewriterModeSettings

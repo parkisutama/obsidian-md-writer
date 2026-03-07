@@ -1,6 +1,6 @@
-// Zoom styles
-// Cursor pointer on bullet points when zoom-on-click is enabled
-.ptm-zoom-on-click {
+// Outliner styles
+// Cursor pointer on bullet points when outliner-on-click is enabled
+.ptm-outliner-on-click {
   .cm-editor .cm-formatting-list-ol,
   .cm-editor .cm-formatting-list-ul {
     cursor: pointer;
@@ -26,7 +26,7 @@
   border-bottom-color: var(--background-modifier-border);
 }
 
-.ptm-zoom-header {
+.ptm-outliner-header {
   display: flex;
   flex-wrap: wrap;
   margin: var(--file-margins);
@@ -34,7 +34,7 @@
   margin-bottom: var(--size-4-2);
 }
 
-.ptm-zoom-title {
+.ptm-outliner-title {
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
@@ -45,7 +45,7 @@
   }
 }
 
-.ptm-zoom-delimiter {
+.ptm-outliner-delimiter {
   display: inline-block;
   padding: 0 var(--size-4-2);
   color: var(--text-faint);
