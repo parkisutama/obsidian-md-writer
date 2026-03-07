@@ -97,7 +97,7 @@ export default class TypewriterModeLib {
   }
 
   getRestoreCursorPositionFeature(): RestoreCursorPosition {
-    return this.features.restoreCursorPosition[
+    return this.features.general[
       "restoreCursorPosition.isRestoreCursorPositionEnabled"
     ] as RestoreCursorPosition;
   }

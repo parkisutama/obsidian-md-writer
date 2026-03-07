@@ -9,6 +9,7 @@ import type TypewriterModeLib from "@/lib";
 import fundingText from "@/texts/Funding.md" with { type: "text" };
 
 interface TabDefinition {
+  description: string;
   id: string;
   label: string;
   render: (container: HTMLElement) => void;
@@ -18,7 +19,7 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
   override icon = "type-outline";
 
   private tm: TypewriterModeLib;
-  private activeTab = "general";
+  private activeTab = "writingModes";
 
   constructor(app: App, tm: TypewriterModeLib) {
     super(app, tm.plugin);
@@ -34,20 +35,121 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
     }
   }
 
+  private addTabDescription(container: HTMLElement, description: string) {
+    const descEl = container.createDiv({ cls: "tm-tab-description" });
+    descEl.setText(description);
+  }
+
   private getTabs(): TabDefinition[] {
     return [
       {
+        id: "writingModes",
+        label: "Writing Modes",
+        description:
+          "Preset feature combinations for different writing workflows. Select a mode to activate its preset, or choose None to manage features manually.",
+        render: (container) => {
+          this.addTabDescription(
+            container,
+            "Preset feature combinations for different writing workflows. Select a mode to activate its preset, or choose None to manage features manually."
+          );
+          const group = new SettingGroup(container);
+          this.registerFeaturesInGroup(group, this.tm.features.writingModes);
+        },
+      },
+      {
         id: "general",
         label: "General",
+        description:
+          "Plugin activation, platform settings, and cursor persistence. Active in all conditions.",
         render: (container) => {
+          this.addTabDescription(
+            container,
+            "Plugin activation, platform settings, and cursor persistence. Active in all conditions."
+          );
           const group = new SettingGroup(container);
           this.registerFeaturesInGroup(group, this.tm.features.general);
         },
       },
       {
+        id: "writingFocus",
+        label: "Writing Focus",
+        description:
+          "Hide Obsidian panels for a full writing space. Use in Writing or Idea mode.",
+        render: (container) => {
+          this.addTabDescription(
+            container,
+            "Hide Obsidian panels for a full writing space. Use in Writing or Idea mode."
+          );
+          const group = new SettingGroup(container);
+          this.registerFeaturesInGroup(group, this.tm.features.writingFocus);
+        },
+      },
+      {
+        id: "outliner",
+        label: "Outliner",
+        description:
+          "Zoom into bullet nodes and navigate idea hierarchies. Effective for Idea mode. May conflict with Typewriter if both are active.",
+        render: (container) => {
+          this.addTabDescription(
+            container,
+            "Zoom into bullet nodes and navigate idea hierarchies. Effective for Idea mode. May conflict with Typewriter if both are active."
+          );
+          const group = new SettingGroup(container);
+          this.registerFeaturesInGroup(group, this.tm.features.outliner);
+        },
+      },
+      {
+        id: "hemingway",
+        label: "Hemingway",
+        description:
+          "Block editing of previous text. Pair with Outliner in Idea mode or Typewriter in Writing mode. Disable during Editing.",
+        render: (container) => {
+          this.addTabDescription(
+            container,
+            "Block editing of previous text. Pair with Outliner in Idea mode or Typewriter in Writing mode. Disable during Editing."
+          );
+          const group = new SettingGroup(container);
+          this.registerFeaturesInGroup(group, this.tm.features.hemingwayMode);
+        },
+      },
+      {
+        id: "dimming",
+        label: "Dimming",
+        description:
+          "Dim paragraphs or sentences outside focus. Pairs naturally with Typewriter. Disable during Editing so all text is visible.",
+        render: (container) => {
+          this.addTabDescription(
+            container,
+            "Dim paragraphs or sentences outside focus. Pairs naturally with Typewriter. Disable during Editing so all text is visible."
+          );
+          const group = new SettingGroup(container);
+          this.registerFeaturesInGroup(group, this.tm.features.dimming);
+        },
+      },
+      {
+        id: "currentLine",
+        label: "Current Line",
+        description:
+          "Visually highlight the active line. Useful in Editing mode. Redundant if Dimming is already active.",
+        render: (container) => {
+          this.addTabDescription(
+            container,
+            "Visually highlight the active line. Useful in Editing mode. Redundant if Dimming is already active."
+          );
+          const group = new SettingGroup(container);
+          this.registerFeaturesInGroup(group, this.tm.features.currentLine);
+        },
+      },
+      {
         id: "typewriter",
         label: "Typewriter",
+        description:
+          "Lock the cursor at a fixed vertical position. Core of Writing mode. Disable when Outliner is active as both manage scrolling differently.",
         render: (container) => {
+          this.addTabDescription(
+            container,
+            "Lock the cursor at a fixed vertical position. Core of Writing mode. Disable when Outliner is active as both manage scrolling differently."
+          );
           const group = new SettingGroup(container);
           if (
             this.tm.settings.keepLinesAboveAndBelow
@@ -65,7 +167,13 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
       {
         id: "keepLines",
         label: "Keep Lines",
+        description:
+          "A lighter alternative to Typewriter — maintain line spacing above and below the cursor. Choose one, not both.",
         render: (container) => {
+          this.addTabDescription(
+            container,
+            "A lighter alternative to Typewriter — maintain line spacing above and below the cursor. Choose one, not both."
+          );
           const group = new SettingGroup(container);
           if (this.tm.settings.typewriter.isTypewriterScrollEnabled) {
             group.addSetting((setting) =>
@@ -81,78 +189,38 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
         },
       },
       {
-        id: "currentLine",
-        label: "Current Line",
-        render: (container) => {
-          const group = new SettingGroup(container);
-          this.registerFeaturesInGroup(group, this.tm.features.currentLine);
-        },
-      },
-      {
-        id: "maxChar",
-        label: "Line Width",
-        render: (container) => {
-          const group = new SettingGroup(container);
-          this.registerFeaturesInGroup(group, this.tm.features.maxChar);
-        },
-      },
-      {
-        id: "dimming",
-        label: "Dimming",
-        render: (container) => {
-          const group = new SettingGroup(container);
-          this.registerFeaturesInGroup(group, this.tm.features.dimming);
-        },
-      },
-      {
-        id: "writingFocus",
-        label: "Writing Focus",
-        render: (container) => {
-          const group = new SettingGroup(container);
-          this.registerFeaturesInGroup(group, this.tm.features.writingFocus);
-        },
-      },
-      {
-        id: "hemingway",
-        label: "Hemingway",
-        render: (container) => {
-          const group = new SettingGroup(container);
-          this.registerFeaturesInGroup(group, this.tm.features.hemingwayMode);
-        },
-      },
-      {
         id: "whitespace",
         label: "Whitespace",
+        description:
+          "Visualize spaces, tabs, and line breaks. Specifically for Editing and pre-publish review.",
         render: (container) => {
+          this.addTabDescription(
+            container,
+            "Visualize spaces, tabs, and line breaks. Specifically for Editing and pre-publish review."
+          );
           const group = new SettingGroup(container);
           this.registerFeaturesInGroup(group, this.tm.features.showWhitespace);
         },
       },
       {
-        id: "outliner",
-        label: "Outliner",
+        id: "maxChar",
+        label: "Line Width",
+        description:
+          "Character limit per line and long line warnings. Useful in Editing for readability and clean Git diffs.",
         render: (container) => {
-          const group = new SettingGroup(container);
-          this.registerFeaturesInGroup(group, this.tm.features.outliner);
-        },
-      },
-      {
-        id: "cursor",
-        label: "Cursor",
-        render: (container) => {
-          const group = new SettingGroup(container);
-          this.registerFeaturesInGroup(
-            group,
-            this.tm.features.restoreCursorPosition
+          this.addTabDescription(
+            container,
+            "Character limit per line and long line warnings. Useful in Editing for readability and clean Git diffs."
           );
+          const group = new SettingGroup(container);
+          this.registerFeaturesInGroup(group, this.tm.features.maxChar);
         },
       },
       {
         id: "about",
         label: "About",
+        description: "",
         render: (container) => {
-          const group = new SettingGroup(container);
-          this.registerFeaturesInGroup(group, this.tm.features.updates);
           const fundingDiv = container.createDiv();
           MarkdownRenderer.render(
             this.app,

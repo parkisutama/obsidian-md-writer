@@ -98,6 +98,24 @@ export interface OutlinerSettings {
   isOutlinerOnClickEnabled: boolean;
 }
 
+export type WritingMode = "idea" | "writing" | "editing" | "none";
+
+export interface WritingModePreset {
+  currentLine: boolean;
+  dimming: boolean;
+  hemingwayMode: boolean;
+  maxChars: boolean;
+  outliner: boolean;
+  showWhitespace: boolean;
+  typewriter: boolean;
+  writingFocus: boolean;
+}
+
+export interface WritingModeSettings {
+  activeMode: WritingMode;
+  presets: Record<Exclude<WritingMode, "none">, WritingModePreset>;
+}
+
 export interface TypewriterModeSettings {
   currentLine: CurrentLineSettings;
   dimming: DimmingSettings;
@@ -110,6 +128,7 @@ export interface TypewriterModeSettings {
   showWhitespace: ShowWhitespaceSettings;
   typewriter: TypewriterSettings;
   writingFocus: WritingFocusSettings;
+  writingMode: WritingModeSettings;
 }
 
 // Typesafe dotted-path type for accessing nested settings
@@ -224,6 +243,41 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
     isOutlinerEnabled: true,
     isOutlinerOnClickEnabled: true,
     isOutlinerBreadcrumbsEnabled: true,
+  },
+  writingMode: {
+    activeMode: "none",
+    presets: {
+      idea: {
+        outliner: true,
+        hemingwayMode: true,
+        writingFocus: true,
+        typewriter: false,
+        dimming: false,
+        currentLine: false,
+        showWhitespace: false,
+        maxChars: false,
+      },
+      writing: {
+        outliner: false,
+        hemingwayMode: true,
+        writingFocus: true,
+        typewriter: true,
+        dimming: true,
+        currentLine: false,
+        showWhitespace: false,
+        maxChars: false,
+      },
+      editing: {
+        outliner: false,
+        hemingwayMode: false,
+        writingFocus: false,
+        typewriter: false,
+        dimming: false,
+        currentLine: true,
+        showWhitespace: true,
+        maxChars: true,
+      },
+    },
   },
 };
 
@@ -449,6 +503,7 @@ function migrateSettings(
     hemingwayMode: migrateHemingwaySettings(legacy),
     showWhitespace: { ...DEFAULT_SETTINGS.showWhitespace },
     outliner: { ...DEFAULT_SETTINGS.outliner },
+    writingMode: { ...DEFAULT_SETTINGS.writingMode },
   };
 }
 
