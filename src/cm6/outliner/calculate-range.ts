@@ -3,7 +3,7 @@ import type { EditorState } from "@codemirror/state";
 
 const LIST_ITEM_RE = /^\s*([-*+]|\d+\.)\s+/;
 
-export function calculateRangeForZooming(
+export function calculateOutlinerRange(
   state: EditorState,
   pos: number
 ): { from: number; to: number } | null {

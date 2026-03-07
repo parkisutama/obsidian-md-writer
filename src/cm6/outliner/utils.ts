@@ -1,7 +1,7 @@
 import type { EditorState, RangeSet, RangeValue } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
-import { zoomInEffect, zoomOutEffect } from "./effects";
-import { zoomStateField } from "./zoom-state-field";
+import { outlinerFocusEffect, outlinerUnfocusEffect } from "./effects";
+import { outlinerStateField } from "./state-field";
 
 function rangeSetToArray<T extends RangeValue>(
   rs: RangeSet<T>
@@ -18,7 +18,7 @@ function rangeSetToArray<T extends RangeValue>(
 export function getHiddenRanges(
   state: EditorState
 ): Array<{ from: number; to: number }> {
-  return rangeSetToArray(state.field(zoomStateField));
+  return rangeSetToArray(state.field(outlinerStateField));
 }
 
 export function getVisibleRange(
@@ -42,16 +42,16 @@ export function getVisibleRange(
   return null;
 }
 
-export function isZoomedIn(state: EditorState): boolean {
+export function isOutlinerFocused(state: EditorState): boolean {
   return getVisibleRange(state) !== null;
 }
 
-export function dispatchZoomIn(
+export function dispatchOutlinerFocus(
   view: EditorView,
   from: number,
   to: number
 ): void {
-  view.dispatch({ effects: [zoomInEffect.of({ from, to })] });
+  view.dispatch({ effects: [outlinerFocusEffect.of({ from, to })] });
   view.dispatch({
     effects: [
       EditorView.scrollIntoView(view.state.selection.main, { y: "start" }),
@@ -59,8 +59,8 @@ export function dispatchZoomIn(
   });
 }
 
-export function dispatchZoomOut(view: EditorView): void {
-  view.dispatch({ effects: [zoomOutEffect.of()] });
+export function dispatchOutlinerUnfocus(view: EditorView): void {
+  view.dispatch({ effects: [outlinerUnfocusEffect.of()] });
   view.dispatch({
     effects: [
       EditorView.scrollIntoView(view.state.selection.main, { y: "center" }),

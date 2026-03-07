@@ -1,14 +1,20 @@
 import type { Extension } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import { Notice, type Plugin } from "obsidian";
+import { createOutlinerExtension } from "@/cm6/outliner";
+import {
+  hideBreadcrumbs,
+  showBreadcrumbs,
+} from "@/cm6/outliner/breadcrumb-panel";
+import { calculateOutlinerRange } from "@/cm6/outliner/calculate-range";
+import {
+  dispatchOutlinerFocus,
+  dispatchOutlinerUnfocus,
+} from "@/cm6/outliner/utils";
 import type { PerWindowProps } from "@/cm6/per-window-props";
 import createTypewriterModeViewPlugin from "@/cm6/plugin";
 import { createShowWhitespaceExtension } from "@/cm6/show-whitespace";
 import { createWarnLongLineExtension } from "@/cm6/warn-long-line";
-import { createZoomExtension } from "@/cm6/zoom";
-import { hideBreadcrumbs, showBreadcrumbs } from "@/cm6/zoom/breadcrumb-panel";
-import { calculateRangeForZooming } from "@/cm6/zoom/calculate-range";
-import { dispatchZoomIn, dispatchZoomOut } from "@/cm6/zoom/zoom-utils";
 import TypewriterModeSettingTab from "@/components/settings-tab";
 import type { AbstractCommand } from "./capabilities/base/abstract-command";
 import type { Feature } from "./capabilities/base/feature";
@@ -59,7 +65,7 @@ export default class TypewriterModeLib {
     this.editorExtensions = [
       createTypewriterModeViewPlugin(this),
       createShowWhitespaceExtension(),
-      createZoomExtension(this.settings.zoom),
+      createOutlinerExtension(this.settings.outliner),
       createWarnLongLineExtension(this),
     ];
   }
@@ -138,12 +144,12 @@ export default class TypewriterModeLib {
     this.perWindowProps.cssVariables[property] = value;
   }
 
-  reconfigureZoom() {
-    this.editorExtensions[2] = createZoomExtension(this.settings.zoom);
+  reconfigureOutliner() {
+    this.editorExtensions[2] = createOutlinerExtension(this.settings.outliner);
     this.plugin.app.workspace.updateOptions();
   }
 
-  zoomInAtCursor(view: EditorView) {
+  outlinerFocusAtCursor(view: EditorView) {
     const config = {
       foldHeading: true,
       foldIndent: true,
@@ -156,36 +162,36 @@ export default class TypewriterModeLib {
 
     if (!(config.foldHeading && config.foldIndent)) {
       new Notice(
-        'To use zoom, enable "Fold heading" and "Fold indent" in Settings → Editor'
+        'To use outliner focus, enable "Fold heading" and "Fold indent" in Settings → Editor'
       );
       return;
     }
 
-    this.zoomToPosition(view, view.state.selection.main.head);
+    this.outlinerFocusAtPosition(view, view.state.selection.main.head);
   }
 
-  zoomToPosition(view: EditorView, pos: number) {
-    const range = calculateRangeForZooming(view.state, pos);
+  outlinerFocusAtPosition(view: EditorView, pos: number) {
+    const range = calculateOutlinerRange(view.state, pos);
     if (!range) {
       return;
     }
 
-    dispatchZoomIn(view, range.from, range.to);
+    dispatchOutlinerFocus(view, range.from, range.to);
 
-    if (this.settings.zoom.isZoomBreadcrumbsEnabled) {
+    if (this.settings.outliner.isOutlinerBreadcrumbsEnabled) {
       const navigateCallback = (v: EditorView, crumbPos: number | null) => {
         if (crumbPos === null) {
-          this.zoomOut(v);
+          this.outlinerUnfocus(v);
         } else {
-          this.zoomToPosition(v, crumbPos);
+          this.outlinerFocusAtPosition(v, crumbPos);
         }
       };
       showBreadcrumbs(view, range.from, navigateCallback);
     }
   }
 
-  zoomOut(view: EditorView) {
+  outlinerUnfocus(view: EditorView) {
     hideBreadcrumbs(view);
-    dispatchZoomOut(view);
+    dispatchOutlinerUnfocus(view);
   }
 }

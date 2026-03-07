@@ -6,12 +6,12 @@ import general from "./general";
 import hemingwayMode from "./hemingway-mode";
 import keepAboveAndBelow from "./keep-above-and-below";
 import maxChar from "./max-char";
+import outliner from "./outliner";
 import restoreCursorPosition from "./restore-cursor-position";
 import showWhitespace from "./show-whitespace";
 import typewriter from "./typewriter";
 import updates from "./updates";
 import writingFocus from "./writing-focus";
-import zoom from "./zoom";
 
 export function getFeatures(
   tm: TypewriterModeLib
@@ -28,6 +28,6 @@ export function getFeatures(
     updates: updates(tm),
     writingFocus: writingFocus(tm),
     restoreCursorPosition: restoreCursorPosition(tm),
-    zoom: zoom(tm),
+    outliner: outliner(tm),
   };
 }

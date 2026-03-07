@@ -129,11 +129,11 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
         },
       },
       {
-        id: "zoom",
-        label: "Zoom",
+        id: "outliner",
+        label: "Outliner",
         render: (container) => {
           const group = new SettingGroup(container);
-          this.registerFeaturesInGroup(group, this.tm.features.zoom);
+          this.registerFeaturesInGroup(group, this.tm.features.outliner);
         },
       },
       {

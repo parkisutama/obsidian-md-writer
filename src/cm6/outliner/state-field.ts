@@ -1,33 +1,33 @@
 import { type Extension, StateField } from "@codemirror/state";
 import { Decoration, type DecorationSet, EditorView } from "@codemirror/view";
-import { zoomInEffect, zoomOutEffect } from "./effects";
+import { outlinerFocusEffect, outlinerUnfocusEffect } from "./effects";
 
-const zoomMarkHidden = Decoration.replace({ block: true });
+const outlinerMarkHidden = Decoration.replace({ block: true });
 
-export const zoomStateField = StateField.define<DecorationSet>({
+export const outlinerStateField = StateField.define<DecorationSet>({
   create: () => Decoration.none,
 
   update: (decorations, tr) => {
     let result = decorations.map(tr.changes);
 
     for (const e of tr.effects) {
-      if (e.is(zoomInEffect)) {
+      if (e.is(outlinerFocusEffect)) {
         result = result.update({ filter: () => false });
 
         if (e.value.from > 0) {
           result = result.update({
-            add: [zoomMarkHidden.range(0, e.value.from - 1)],
+            add: [outlinerMarkHidden.range(0, e.value.from - 1)],
           });
         }
 
         if (e.value.to < tr.newDoc.length) {
           result = result.update({
-            add: [zoomMarkHidden.range(e.value.to + 1, tr.newDoc.length)],
+            add: [outlinerMarkHidden.range(e.value.to + 1, tr.newDoc.length)],
           });
         }
       }
 
-      if (e.is(zoomOutEffect)) {
+      if (e.is(outlinerUnfocusEffect)) {
         result = result.update({ filter: () => false });
       }
     }
@@ -38,6 +38,6 @@ export const zoomStateField = StateField.define<DecorationSet>({
   provide: (f) => EditorView.decorations.from(f),
 });
 
-export function getZoomExtension(): Extension {
-  return zoomStateField;
+export function getOutlinerExtension(): Extension {
+  return outlinerStateField;
 }
