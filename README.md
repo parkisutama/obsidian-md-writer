@@ -4,21 +4,23 @@ MD Writer is a specialized environment designed for high-precision drafting and 
 
 ## Features
 
-Typewriter Scrolling: The active line remains fixed at a specific vertical position on the screen.
+**Typewriter Scrolling**: The active line remains fixed at a specific vertical position on the screen. Alternatively, use *Keep Lines Above and Below* to always maintain a set number of context lines around the cursor.
 
-Outliner Zoom (Logseq-style): Focus on specific list items and their children for deep thinking, inspired by Obsidian Zoom.
+**Outliner Zoom** (Logseq-style): Focus on specific list items and their children for deep thinking, inspired by Obsidian Zoom. Supports breadcrumb navigation and zoom-on-bullet-click.
 
-Show Whitespace: Visualize tabs and spaces to maintain perfect Markdown indentation
+**Show Whitespace**: Visualize spaces, tabs, trailing spaces, and two-space strict line breaks to maintain precise Markdown formatting.
 
-Hemingway Mode: Write forwards only by disabling the ability to edit previous text.
+**Hemingway Mode**: Write forwards only by disabling the ability to edit previous text. Optionally allow backspace and display a status bar indicator.
 
-Current Line Highlighting: Visual emphasis on the active row.
+**Current Line Highlighting**: Visual emphasis on the active row with customizable styles (box, underline, background), colors, and fade intensity for surrounding lines.
 
-Focus Dimming: Unfocused paragraphs and sentences are dimmed to reduce distraction.
+**Focus Dimming**: Unfocused paragraphs or sentences are dimmed to reduce distraction. Supports paragraph and sentence granularity, with configurable opacity and pause-on-scroll/select.
 
-Line Length Limiting: Restrict the width of the text area for better readability.
+**Line Width**: Limit the maximum number of characters per line to constrain the editor area for better readability. Separately, warn when a line exceeds a configurable character limit — useful for keeping lines short for clean Git diffs.
 
-Cursor Persistence: Automatically restores your exact cursor position when reopening files.
+**Writing Focus**: Distraction-free fullscreen writing mode with optional vignette overlay, custom font size, and togglable header/status bar.
+
+**Cursor Persistence**: Automatically restores your exact cursor position when reopening files.
 
 ## Installation
 
