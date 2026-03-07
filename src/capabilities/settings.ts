@@ -34,7 +34,9 @@ export interface KeepLinesAboveAndBelowSettings {
 
 export interface MaxCharsSettings {
   isMaxCharsPerLineEnabled: boolean;
+  isWarnLongLineEnabled: boolean;
   maxCharsPerLine: number;
+  warnLongLineChars: number;
 }
 
 export interface DimmingSettings {
@@ -167,7 +169,9 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
   },
   maxChars: {
     isMaxCharsPerLineEnabled: false,
+    isWarnLongLineEnabled: false,
     maxCharsPerLine: 64,
+    warnLongLineChars: 120,
   },
   dimming: {
     isDimUnfocusedEnabled: false,
@@ -430,6 +434,8 @@ function migrateSettings(
         DEFAULT_SETTINGS.maxChars.isMaxCharsPerLineEnabled,
       maxCharsPerLine:
         legacy.maxCharsPerLine ?? DEFAULT_SETTINGS.maxChars.maxCharsPerLine,
+      isWarnLongLineEnabled: DEFAULT_SETTINGS.maxChars.isWarnLongLineEnabled,
+      warnLongLineChars: DEFAULT_SETTINGS.maxChars.warnLongLineChars,
     },
     dimming: migrateDimmingSettings(legacy),
     currentLine: migrateCurrentLineSettings(legacy),

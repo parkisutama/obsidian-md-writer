@@ -4,6 +4,7 @@ import { Notice, type Plugin } from "obsidian";
 import type { PerWindowProps } from "@/cm6/per-window-props";
 import createTypewriterModeViewPlugin from "@/cm6/plugin";
 import { createShowWhitespaceExtension } from "@/cm6/show-whitespace";
+import { createWarnLongLineExtension } from "@/cm6/warn-long-line";
 import { createZoomExtension } from "@/cm6/zoom";
 import { hideBreadcrumbs, showBreadcrumbs } from "@/cm6/zoom/breadcrumb-panel";
 import { calculateRangeForZooming } from "@/cm6/zoom/calculate-range";
@@ -59,6 +60,7 @@ export default class TypewriterModeLib {
       createTypewriterModeViewPlugin(this),
       createShowWhitespaceExtension(),
       createZoomExtension(this.settings.zoom),
+      createWarnLongLineExtension(this),
     ];
   }
 
