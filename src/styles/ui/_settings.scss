@@ -1,0 +1,36 @@
+.typewriter-mode-setting.setting-item.is-disabled {
+  opacity: 0.5;
+}
+
+.tm-settings {
+  .tm-settings-tab-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--background-modifier-border);
+  }
+
+  .tm-settings-tab {
+    padding: 4px 12px;
+    border-radius: var(--radius-s);
+    cursor: pointer;
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition:
+      background-color 100ms ease-in-out,
+      color 100ms ease-in-out;
+
+    &:hover {
+      background-color: var(--background-modifier-hover);
+      color: var(--text-normal);
+    }
+
+    &.is-active {
+      background-color: var(--interactive-accent);
+      color: var(--text-on-accent);
+    }
+  }
+}

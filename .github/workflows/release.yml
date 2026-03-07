@@ -1,0 +1,48 @@
+# From https://marcus.se.net/obsidian-plugin-docs/publishing/release-your-plugin-with-github-actions
+
+name: Release Obsidian plugin
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - "*"
+
+env:
+  PLUGIN_NAME: obsidian-typewriter-mode
+
+jobs:
+  check:
+    uses: ./.github/workflows/check.yml
+
+  build:
+    runs-on: ubuntu-latest
+    needs: check
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Build
+        run: |
+          bun install
+          bun run ci
+          mkdir ${{ env.PLUGIN_NAME }}
+          cp -r dist/* ${{ env.PLUGIN_NAME }}
+          zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: ${{ contains(github.ref, '-') }}
+          body_path: ./dist/release-notes.md
+          files: |
+            ${{ env.PLUGIN_NAME }}.zip
+            dist/main.js
+            dist/manifest.json
+            dist/styles.css

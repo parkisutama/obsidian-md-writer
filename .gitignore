@@ -1,0 +1,22 @@
+# npm
+node_modules
+
+# Build
+dist
+lib-dist
+test-vault
+
+# Jetbrains IDEs
+.idea
+
+# VSCode
+.vscode
+
+# MacOS
+.DS_Store
+
+# Environment
+.env
+
+# rumdl
+.rumdl_cache

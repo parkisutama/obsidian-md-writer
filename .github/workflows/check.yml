@@ -1,0 +1,28 @@
+name: Check
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Check
+        run: |
+          bun install
+          chmod +x node_modules/@rumdl/cli-linux-x64/rumdl
+          bun run check
