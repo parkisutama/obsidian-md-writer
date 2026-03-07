@@ -1,0 +1,64 @@
+import type { SettingGroup } from "obsidian";
+import { Feature } from "@/capabilities/base/feature";
+import type { WritingMode, WritingModePreset } from "@/capabilities/settings";
+
+const FEATURE_LABELS: Record<keyof WritingModePreset, string> = {
+  outliner: "Outliner",
+  hemingwayMode: "Hemingway",
+  writingFocus: "Writing Focus",
+  typewriter: "Typewriter",
+  dimming: "Dimming",
+  currentLine: "Current Line",
+  showWhitespace: "Whitespace",
+  maxChars: "Line Width",
+};
+
+const MODE_DESCRIPTIONS: Record<Exclude<WritingMode, "none">, string> = {
+  idea: "Brainstorm and structure ideas. Outliner zoom + Hemingway for forward-only ideation.",
+  writing:
+    "Draft and compose. Typewriter scroll + Dimming for focused writing flow.",
+  editing:
+    "Revise and polish. Current Line + Whitespace + Line Width for precision editing.",
+};
+
+export default class WritingModePresetConfig extends Feature {
+  // Use a dummy path since this feature manages nested preset data
+  readonly settingKey = "writingMode.activeMode" as const;
+
+  override getSettingKey() {
+    return "writingMode.presets" as unknown as typeof this.settingKey;
+  }
+
+  registerSetting(settingGroup: SettingGroup): void {
+    for (const mode of ["idea", "writing", "editing"] as const) {
+      const preset = this.tm.settings.writingMode.presets[mode];
+      const description = MODE_DESCRIPTIONS[mode];
+
+      settingGroup.addSetting((setting) =>
+        setting
+          .setName(`${mode.charAt(0).toUpperCase()}${mode.slice(1)} mode`)
+          .setDesc(description)
+          .setHeading()
+      );
+
+      for (const featureKey of Object.keys(FEATURE_LABELS) as Array<
+        keyof WritingModePreset
+      >) {
+        settingGroup.addSetting((setting) =>
+          setting
+            .setName(FEATURE_LABELS[featureKey])
+            .setClass("typewriter-mode-setting")
+            .addToggle((toggle) =>
+              toggle.setValue(preset[featureKey]).onChange((newValue) => {
+                this.tm.settings.writingMode.presets[mode][featureKey] =
+                  newValue;
+                this.tm.saveSettings().catch((error) => {
+                  console.error("Failed to save settings:", error);
+                });
+              })
+            )
+        );
+      }
+    }
+  }
+}

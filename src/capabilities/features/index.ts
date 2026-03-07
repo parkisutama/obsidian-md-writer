@@ -7,27 +7,25 @@ import hemingwayMode from "./hemingway-mode";
 import keepAboveAndBelow from "./keep-above-and-below";
 import maxChar from "./max-char";
 import outliner from "./outliner";
-import restoreCursorPosition from "./restore-cursor-position";
 import showWhitespace from "./show-whitespace";
 import typewriter from "./typewriter";
-import updates from "./updates";
 import writingFocus from "./writing-focus";
+import writingModes from "./writing-modes";
 
 export function getFeatures(
   tm: TypewriterModeLib
 ): Record<string, Record<string, Feature>> {
   return {
-    currentLine: currentLine(tm),
-    dimming: dimming(tm),
+    writingModes: writingModes(tm),
     general: general(tm),
-    hemingwayMode: hemingwayMode(tm),
-    keepAboveAndBelow: keepAboveAndBelow(tm),
-    maxChar: maxChar(tm),
-    showWhitespace: showWhitespace(tm),
-    typewriter: typewriter(tm),
-    updates: updates(tm),
     writingFocus: writingFocus(tm),
-    restoreCursorPosition: restoreCursorPosition(tm),
     outliner: outliner(tm),
+    hemingwayMode: hemingwayMode(tm),
+    dimming: dimming(tm),
+    currentLine: currentLine(tm),
+    typewriter: typewriter(tm),
+    keepAboveAndBelow: keepAboveAndBelow(tm),
+    showWhitespace: showWhitespace(tm),
+    maxChar: maxChar(tm),
   };
 }
