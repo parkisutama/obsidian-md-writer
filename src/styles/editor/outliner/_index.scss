@@ -12,10 +12,7 @@
     padding-right: 0;
   }
 
-  .markdown-source-view.mod-cm6
-    .cm-line:not(.cm-active, .HyperMD-header, .HyperMD-task-line)
-    .cm-fold-indicator
-    .collapse-indicator {
+  .markdown-source-view.mod-cm6 .cm-line:not(.cm-active, .HyperMD-header, .HyperMD-task-line) .cm-fold-indicator .collapse-indicator {
     margin-right: 18px;
     padding-right: 0;
   }

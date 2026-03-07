@@ -65,7 +65,9 @@ export default class TypewriterModeLib {
     this.editorExtensions = [
       createTypewriterModeViewPlugin(this),
       createShowWhitespaceExtension(),
-      createOutlinerExtension(this.settings.outliner),
+      createOutlinerExtension(this.settings.outliner, (view, pos) =>
+        this.outlinerFocusAtPosition(view, pos)
+      ),
       createWarnLongLineExtension(this),
     ];
   }
@@ -145,7 +147,10 @@ export default class TypewriterModeLib {
   }
 
   reconfigureOutliner() {
-    this.editorExtensions[2] = createOutlinerExtension(this.settings.outliner);
+    this.editorExtensions[2] = createOutlinerExtension(
+      this.settings.outliner,
+      (view, pos) => this.outlinerFocusAtPosition(view, pos)
+    );
     this.plugin.app.workspace.updateOptions();
   }
 

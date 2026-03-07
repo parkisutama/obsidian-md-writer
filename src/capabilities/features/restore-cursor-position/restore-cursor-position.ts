@@ -1,6 +1,6 @@
 // ADAPTED FROM https://github.com/dy-sh/obsidian-remember-cursor-position/blob/master/main.ts
 
-import type { SelectionRange } from "@codemirror/state";
+import { EditorSelection, type SelectionRange } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import type { TAbstractFile, TFile } from "obsidian";
 import { FeatureToggle } from "@/capabilities/base/feature-toggle";
@@ -124,12 +124,19 @@ export default class RestoreCursorPosition extends FeatureToggle {
             );
 
           if (!containsFlashingSpan && savedState) {
+            const docLength = cm.state.doc.length;
+            const clampedSelection = EditorSelection.create([
+              EditorSelection.range(
+                Math.min(savedState.anchor, docLength),
+                Math.min(savedState.head, docLength)
+              ),
+            ]);
             console.debug(
               "Restore cursor position on file-open",
               filePath,
-              savedState
+              clampedSelection
             );
-            cm.dispatch({ selection: savedState });
+            cm.dispatch({ selection: clampedSelection });
           }
         }
       }

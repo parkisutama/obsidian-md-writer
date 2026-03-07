@@ -1,7 +1,7 @@
 import { Compartment, type Extension } from "@codemirror/state";
+import type { EditorView } from "@codemirror/view";
 import type { OutlinerSettings } from "@/capabilities/settings";
 import { getBreadcrumbExtension } from "./breadcrumb-panel";
-import { calculateOutlinerRange } from "./calculate-range";
 import { createClickOnBulletHandler } from "./click-on-bullet";
 import { createBoundaryViolationDetector } from "./detect-boundary-violation";
 import {
@@ -9,7 +9,7 @@ import {
   limitSelectionWhenOutlinerFocused,
 } from "./limit-selection";
 import { getOutlinerExtension } from "./state-field";
-import { dispatchOutlinerFocus, dispatchOutlinerUnfocus } from "./utils";
+import { dispatchOutlinerUnfocus } from "./utils";
 
 const outlinerCoreCmpt = new Compartment();
 const outlinerClickCmpt = new Compartment();
@@ -31,16 +31,14 @@ function buildCoreExtension(enabled: boolean): Extension {
 
 function buildClickExtension(
   enabled: boolean,
-  outlinerEnabled: boolean
+  outlinerEnabled: boolean,
+  onFocus: (view: EditorView, pos: number) => void
 ): Extension {
   if (!(enabled && outlinerEnabled)) {
     return [];
   }
   return createClickOnBulletHandler((view, pos) => {
-    const range = calculateOutlinerRange(view.state, pos);
-    if (range) {
-      dispatchOutlinerFocus(view, range.from, range.to);
-    }
+    onFocus(view, pos);
   });
 }
 
@@ -54,13 +52,17 @@ function buildBreadcrumbExtension(
   return getBreadcrumbExtension();
 }
 
-export function createOutlinerExtension(settings: OutlinerSettings): Extension {
+export function createOutlinerExtension(
+  settings: OutlinerSettings,
+  onFocus: (view: EditorView, pos: number) => void
+): Extension {
   return [
     outlinerCoreCmpt.of(buildCoreExtension(settings.isOutlinerEnabled)),
     outlinerClickCmpt.of(
       buildClickExtension(
         settings.isOutlinerOnClickEnabled,
-        settings.isOutlinerEnabled
+        settings.isOutlinerEnabled,
+        onFocus
       )
     ),
     outlinerBreadcrumbCmpt.of(

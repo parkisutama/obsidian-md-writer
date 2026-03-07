@@ -18,7 +18,11 @@ function rangeSetToArray<T extends RangeValue>(
 export function getHiddenRanges(
   state: EditorState
 ): Array<{ from: number; to: number }> {
-  return rangeSetToArray(state.field(outlinerStateField));
+  const field = state.field(outlinerStateField, false);
+  if (!field) {
+    return [];
+  }
+  return rangeSetToArray(field);
 }
 
 export function getVisibleRange(
