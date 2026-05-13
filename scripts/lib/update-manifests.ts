@@ -1,18 +1,18 @@
-/// <reference types="bun-types" />
+import { readFileSync, writeFileSync } from "node:fs";
 
-export async function updateManifests(
+export function updateManifests(
   targetVersion: string,
   minAppVersion: string,
   outDir = "."
 ) {
   console.log("Reading manifest");
-  const manifest = await Bun.file("manifest.json").json();
+  const manifest = JSON.parse(readFileSync("manifest.json", "utf-8"));
 
   const manifestOutPath = `${outDir}/manifest.json`;
   console.log(`Updating ${manifestOutPath}`);
   manifest.version = targetVersion;
   manifest.minAppVersion = minAppVersion;
-  await Bun.write(manifestOutPath, JSON.stringify(manifest, null, 2));
+  writeFileSync(manifestOutPath, JSON.stringify(manifest, null, 2));
 
   return { targetVersion, minAppVersion };
 }

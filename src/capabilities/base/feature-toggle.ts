@@ -28,7 +28,7 @@ export abstract class FeatureToggle extends Feature {
       setting
         .setName(this.settingTitle)
         .setDesc(this.settingDesc)
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addToggle((toggle) =>
           toggle
             .setValue(this.getSettingValue() as boolean)

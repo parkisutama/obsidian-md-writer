@@ -1,10 +1,17 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { resolve } from "node:path";
 
 import { getPackageMetadata } from "./get-package-metadata";
 import { updateManifests } from "./update-manifests";
 
-export async function setupTestVault(
+export function setupTestVault(
   distDir: string,
   pluginName: string,
   testVaultPath = "./test-vault"
@@ -15,11 +22,11 @@ export async function setupTestVault(
   console.log("Creating test vault");
   mkdirSync(pluginPath, { recursive: true });
 
-  if (await Bun.file(`${obsidianConfigPath}/community-plugins.json`).exists()) {
+  if (existsSync(`${obsidianConfigPath}/community-plugins.json`)) {
     console.log("Community plugins already configured in test vault");
   } else {
     console.log("Creating community-plugins.json");
-    await Bun.write(
+    writeFileSync(
       `${obsidianConfigPath}/community-plugins.json`,
       `["${pluginName}"]`
     );
@@ -42,8 +49,8 @@ export async function setupTestVault(
   }
 
   console.log("Copying updated manifest");
-  const { targetVersion, minAppVersion } = await getPackageMetadata();
-  await updateManifests(targetVersion, minAppVersion, pluginPath);
+  const { targetVersion, minAppVersion } = getPackageMetadata();
+  updateManifests(targetVersion, minAppVersion, pluginPath);
 
   console.log("Test vault successfully prepared");
 }

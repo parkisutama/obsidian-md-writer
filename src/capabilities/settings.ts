@@ -93,9 +93,28 @@ export interface ShowWhitespaceSettings {
 }
 
 export interface OutlinerSettings {
-  isOutlinerBreadcrumbsEnabled: boolean;
+  isCursorStickEnabled: boolean;
+  isKeyboardOpsEnabled: boolean;
   isOutlinerEnabled: boolean;
   isOutlinerOnClickEnabled: boolean;
+  isSidebarOutlineEnabled: boolean;
+  isSmartEnterEnabled: boolean;
+  isSmartSelectEnabled: boolean;
+  isSmartTabEnabled: boolean;
+  sidebarCollapseState: Record<string, Record<string, boolean>>;
+  sidebarFilterMode: "all" | "branch" | "tasks";
+  sidebarFilterModeByFile: Record<string, "all" | "branch" | "tasks">;
+}
+
+export interface BlockIdSettings {
+  isAutoGenerateOnFoldEnabled: boolean;
+  isBlockIdEnabled: boolean;
+  isHideIdsInLivePreviewEnabled: boolean;
+}
+
+export interface FoldPersistSettings {
+  foldState: Record<string, Record<string, boolean>>;
+  isFoldPersistEnabled: boolean;
 }
 
 export type WritingMode = "idea" | "writing" | "editing" | "none";
@@ -117,8 +136,10 @@ export interface WritingModeSettings {
 }
 
 export interface TypewriterModeSettings {
+  blockId: BlockIdSettings;
   currentLine: CurrentLineSettings;
   dimming: DimmingSettings;
+  foldPersist: FoldPersistSettings;
   general: GeneralSettings;
   hemingwayMode: HemingwayModeSettings;
   keepLinesAboveAndBelow: KeepLinesAboveAndBelowSettings;
@@ -203,7 +224,7 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
     isPauseDimUnfocusedWhileSelectingEnabled: true,
   },
   currentLine: {
-    isHighlightCurrentLineEnabled: true,
+    isHighlightCurrentLineEnabled: false,
     isFadeLinesEnabled: false,
     fadeLinesIntensity: 0.5,
     isHighlightCurrentLineOnlyInFocusedEditorEnabled: false,
@@ -217,7 +238,7 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
   writingFocus: {
     doesWritingFocusShowHeader: false,
     doesWritingFocusShowStatusBar: false,
-    doesWritingFocusShowVignette: true,
+    doesWritingFocusShowVignette: false,
     isWritingFocusFullscreen: true,
     writingFocusVignetteStyle: WRITING_FOCUS_VIGNETTE_STYLE.BOX,
     writingFocusFontSize: 0,
@@ -242,7 +263,24 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
   outliner: {
     isOutlinerEnabled: true,
     isOutlinerOnClickEnabled: true,
-    isOutlinerBreadcrumbsEnabled: true,
+    isKeyboardOpsEnabled: false,
+    isCursorStickEnabled: false,
+    isSmartEnterEnabled: false,
+    isSmartTabEnabled: false,
+    isSmartSelectEnabled: false,
+    isSidebarOutlineEnabled: false,
+    sidebarCollapseState: {},
+    sidebarFilterMode: "all",
+    sidebarFilterModeByFile: {},
+  },
+  blockId: {
+    isBlockIdEnabled: false,
+    isAutoGenerateOnFoldEnabled: false,
+    isHideIdsInLivePreviewEnabled: false,
+  },
+  foldPersist: {
+    isFoldPersistEnabled: false,
+    foldState: {},
   },
   writingMode: {
     activeMode: "none",
@@ -250,7 +288,7 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
       idea: {
         outliner: true,
         hemingwayMode: true,
-        writingFocus: true,
+        writingFocus: false,
         typewriter: false,
         dimming: false,
         currentLine: false,
@@ -260,7 +298,7 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
       writing: {
         outliner: false,
         hemingwayMode: true,
-        writingFocus: true,
+        writingFocus: false,
         typewriter: true,
         dimming: true,
         currentLine: false,
@@ -503,6 +541,8 @@ function migrateSettings(
     hemingwayMode: migrateHemingwaySettings(legacy),
     showWhitespace: { ...DEFAULT_SETTINGS.showWhitespace },
     outliner: { ...DEFAULT_SETTINGS.outliner },
+    blockId: { ...DEFAULT_SETTINGS.blockId },
+    foldPersist: { ...DEFAULT_SETTINGS.foldPersist },
     writingMode: { ...DEFAULT_SETTINGS.writingMode },
   };
 }
@@ -521,9 +561,6 @@ async function migrateCursorPositions(
       const data = await vault.adapter.read(oldFilePath);
       const cursorPositions = JSON.parse(data);
       settings.restoreCursorPosition.cursorPositions = cursorPositions;
-      console.debug(
-        "Migrated cursor positions from cursor-positions.json to data.json"
-      );
     }
   } catch (error) {
     console.error("Failed to migrate cursor positions:", error);
@@ -559,7 +596,6 @@ export async function applyStartupMigrations(
     zoom?: {
       isZoomEnabled?: boolean;
       isZoomOnClickEnabled?: boolean;
-      isZoomBreadcrumbsEnabled?: boolean;
     };
   };
 
@@ -572,9 +608,6 @@ export async function applyStartupMigrations(
       isOutlinerOnClickEnabled:
         z.isZoomOnClickEnabled ??
         DEFAULT_SETTINGS.outliner.isOutlinerOnClickEnabled,
-      isOutlinerBreadcrumbsEnabled:
-        z.isZoomBreadcrumbsEnabled ??
-        DEFAULT_SETTINGS.outliner.isOutlinerBreadcrumbsEnabled,
     };
     (settings as Record<string, unknown>).zoom = undefined;
   }

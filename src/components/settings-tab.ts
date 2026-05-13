@@ -37,7 +37,7 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
     return [
       {
         id: "writingModes",
-        label: "Writing Modes",
+        label: "Writing modes",
         description:
           "Preset feature combinations for different writing workflows. Select a mode to activate its preset, or choose None to manage features manually.",
         render: (container) => {
@@ -65,7 +65,7 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
       },
       {
         id: "writingFocus",
-        label: "Writing Focus",
+        label: "Writing focus",
         description:
           "Hide Obsidian panels for a full writing space. Use in Writing or Idea mode.",
         render: (container) => {
@@ -121,7 +121,7 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
       },
       {
         id: "currentLine",
-        label: "Current Line",
+        label: "Current line",
         description:
           "Visually highlight the active line. Useful in Editing mode. Redundant if Dimming is already active.",
         render: (container) => {
@@ -159,7 +159,7 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
       },
       {
         id: "keepLines",
-        label: "Keep Lines",
+        label: "Keep lines",
         description:
           "A lighter alternative to Typewriter — maintain line spacing above and below the cursor. Choose one, not both.",
         render: (container) => {
@@ -197,7 +197,7 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
       },
       {
         id: "maxChar",
-        label: "Line Width",
+        label: "Line width",
         description:
           "Character limit per line and long line warnings. Useful in Editing for readability and clean Git diffs.",
         render: (container) => {

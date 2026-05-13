@@ -3,6 +3,8 @@ import { EditorView } from "@codemirror/view";
 import { outlinerFocusEffect, outlinerUnfocusEffect } from "./effects";
 import { outlinerStateField } from "./state-field";
 
+const BLOCK_ID_LINE_RE = / \^[\w-]+$/u;
+
 function rangeSetToArray<T extends RangeValue>(
   rs: RangeSet<T>
 ): Array<{ from: number; to: number }> {
@@ -50,15 +52,30 @@ export function isOutlinerFocused(state: EditorState): boolean {
   return getVisibleRange(state) !== null;
 }
 
+export function getLineContentEndBeforeBlockId(
+  state: EditorState,
+  pos: number
+): number {
+  const line = state.doc.lineAt(pos);
+  const blockIdMatch = line.text.match(BLOCK_ID_LINE_RE);
+  if (!blockIdMatch || blockIdMatch.index === undefined) {
+    return line.to;
+  }
+
+  return line.from + blockIdMatch.index;
+}
+
 export function dispatchOutlinerFocus(
   view: EditorView,
   from: number,
   to: number
 ): void {
-  view.dispatch({ effects: [outlinerFocusEffect.of({ from, to })] });
+  const targetPos = getLineContentEndBeforeBlockId(view.state, from);
   view.dispatch({
+    selection: { anchor: targetPos },
     effects: [
-      EditorView.scrollIntoView(view.state.selection.main, { y: "start" }),
+      outlinerFocusEffect.of({ from, to }),
+      EditorView.scrollIntoView(targetPos, { y: "center" }),
     ],
   });
 }

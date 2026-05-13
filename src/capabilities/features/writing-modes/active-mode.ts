@@ -12,9 +12,9 @@ export default class WritingModeActive extends Feature {
       setting
         .setName("Active writing mode")
         .setDesc(
-          "Select a writing mode to activate its feature preset. Choose None to manage features manually."
+          "Select a writing mode to activate its feature preset. Choose none to manage features manually."
         )
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addDropdown((dropdown) => {
           dropdown
             .addOption("none", "None")

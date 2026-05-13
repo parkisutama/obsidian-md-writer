@@ -12,7 +12,6 @@ export class OutlinerFocus extends EditorCommand {
       name: this.commandTitle,
       icon: "list-tree",
       editorCallback: this.onCommand.bind(this),
-      hotkeys: [{ modifiers: ["Mod"], key: "." }],
     });
   }
 

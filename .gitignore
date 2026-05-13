@@ -1,5 +1,11 @@
 # npm
 node_modules
+package-lock.json
+npm-shrinkwrap.json
+
+# Other package managers
+bun.lock
+bun.lockb
 
 # Build
 dist
@@ -14,9 +20,14 @@ test-vault
 
 # MacOS
 .DS_Store
+*:Zone.Identifier
 
 # Environment
 .env
 
 # rumdl
 .rumdl_cache
+
+.claude
+.codex
+AGENTS.md

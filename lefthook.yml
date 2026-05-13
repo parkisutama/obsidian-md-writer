@@ -1,6 +1,6 @@
 pre-commit:
   jobs:
-    - run: bun run check
+    - run: pnpm run fix && pnpm run check
       glob:
         - "*.js"
         - "*.jsx"

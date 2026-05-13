@@ -1,16 +1,14 @@
-/// <reference types="bun-types" />
-
-import { copyFileSync } from "node:fs";
+import { copyFileSync, readFileSync, writeFileSync } from "node:fs";
 
 import { getPackageMetadata } from "./get-package-metadata";
 
-export async function generateCiArtefacts(outDir: string) {
+export function generateCiArtefacts(outDir: string) {
   console.log("Copying updated manifest");
-  const { targetVersion } = await getPackageMetadata();
+  const { targetVersion } = getPackageMetadata();
   copyFileSync("manifest.json", `${outDir}/manifest.json`);
 
   console.log("Extracting release notes from change log");
-  const changelog = await Bun.file("CHANGELOG.md").text();
+  const changelog = readFileSync("CHANGELOG.md", "utf-8");
   const pattern = `^## ${targetVersion}\\n+((?:([^#]{2})|\\n)+)`;
   const regex = new RegExp(pattern, "gm");
   const matches = regex.exec(changelog);
@@ -20,5 +18,5 @@ export async function generateCiArtefacts(outDir: string) {
   }
 
   console.log("Writing release notes");
-  await Bun.write(`${outDir}/release-notes.md`, release_notes ?? "");
+  writeFileSync(`${outDir}/release-notes.md`, release_notes ?? "");
 }

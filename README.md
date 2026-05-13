@@ -1,12 +1,12 @@
 # MD Writer
 
-MD Writer is a specialized environment designed for high-precision drafting and structural focus. This version modifies the original Typewriter Mode to integrate advanced outliner capabilities and visual structural aids, creating a workflow optimized for both long-form prose and complex technical note-taking.
+MD Writer is a specialized Obsidian editor environment for high-precision drafting and structural focus. It combines typewriter scrolling, whitespace visualization, and outliner-centric navigation into a workflow for long-form prose and complex technical notes.
 
 ## Features
 
 **Typewriter Scrolling**: The active line remains fixed at a specific vertical position on the screen. Alternatively, use *Keep Lines Above and Below* to always maintain a set number of context lines around the cursor.
 
-**Outliner Zoom** (Logseq-style): Focus on specific list items and their children for deep thinking, inspired by Obsidian Zoom. Supports breadcrumb navigation and zoom-on-bullet-click.
+**Outliner Zoom** (Logseq-style): Focus on specific headings or list items and their children for deep thinking, inspired by Obsidian Zoom. Designed to pair with the sidebar outline and zoom-on-bullet-click without adding an in-editor breadcrumb bar.
 
 **Show Whitespace**: Visualize spaces, tabs, trailing spaces, and two-space strict line breaks to maintain precise Markdown formatting.
 
@@ -24,23 +24,23 @@ MD Writer is a specialized environment designed for high-precision drafting and 
 
 ## Installation
 
-### Manual
+### Manual installation
 
-1. Download the latest release of this modified plugin.
-2. Extract the folder to your vault's plugins directory: `<vault>/.obsidian/plugins/obsidian-writer/`.
-3. Force reload Obsidian (**Ctrl/Cmd+P** → "Reload app without saving").
+1. Download the latest release of MD Writer.
+2. Extract the folder to your vault's plugins directory: `<vault>/.obsidian/plugins/md-writer/`.
+3. Open the command palette and run `Reload app without saving`.
 
 ---
 
-## Modification Note
+## Positioning
 
-This version of the plugin is tailored for a specific workflow that is not available in the default [Typewriter Mode](https://github.com/davisriedel/obsidian-typewriter-mode). It combines the ergonomic benefits of typewriter scrolling with the structural control of whitespace visualization and the hierarchical focus of Logseq-style zooming.
+MD Writer follows a different product direction from the original [Typewriter Mode](https://github.com/davisriedel/obsidian-typewriter-mode). The codebase keeps the ergonomic foundation of typewriter scrolling while expanding into whitespace-aware editing and outliner-focused navigation.
 
 ## Acknowledgements
 
-This plugin is a fork and modification of the original [Typewriter Mode](https://github.com/davisriedel/obsidian-typewriter-mode) by [Davis Riedel (davisriedel)](https://github.com/davisriedel), licensed under the MIT License. The build infrastructure is derived from [bun-obsidian-plugin-build-scripts](https://github.com/davisriedel/bun-obsidian-plugin-build-scripts), also by Davis Riedel and also MIT-licensed. The Rust-based tooling (Grass SCSS compiler, Just command runner, WASM build pipeline) from those original projects has been replaced with cross-platform Node.js/npm alternatives (sass, npm scripts) for Windows compatibility.
+MD Writer descends from the original [Typewriter Mode](https://github.com/davisriedel/obsidian-typewriter-mode) by [Davis Riedel (davisriedel)](https://github.com/davisriedel), licensed under the MIT License. The build infrastructure was originally derived from [bun-obsidian-plugin-build-scripts](https://github.com/davisriedel/bun-obsidian-plugin-build-scripts), also by Davis Riedel and also MIT-licensed, and has since been migrated to a standard pnpm + esbuild toolchain.
 
-**Originally from Typewriter Mode:**
+**Inherited and adapted features:**
 
 This plugin started as a fork of the incredible [Typewriter Scroll](https://github.com/deathau/cm-typewriter-scroll-obsidian) plugin by [deathau](https://github.com/deathau). It was turned into a separate plugin because many new features were added, breaking changes were introduced, and the code was completely restructured to make it more extensible.
 
@@ -58,6 +58,12 @@ The hemingway mode feature was derived from [Obsidian Hemingway Mode](https://gi
 - [Obsidian Zoom](https://github.com/vslinko/obsidian-zoom) by [vslinko](https://github.com/vslinko)
 
 Many thanks to the developers of these fantastic plugins. Please also consider supporting them.
+
+## Privacy and network use
+
+MD Writer stores its settings and cursor-position history in the plugin data file managed by Obsidian.
+
+If update announcements are enabled, MD Writer sends a read-only request to the GitHub Releases API for this repository to fetch release notes after an update. The plugin does not send vault content or note text over the network.
 
 ## License
 

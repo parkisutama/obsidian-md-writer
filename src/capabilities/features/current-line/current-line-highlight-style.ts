@@ -20,7 +20,7 @@ export default class CurrentLineHighlightStyle extends Feature {
       setting
         .setName("Current line highlight style")
         .setDesc("The style of the current line highlight")
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addDropdown((dropdown) =>
           dropdown
             .addOption(CURRENT_LINE_HIGHLIGHT_STYLE.BOX, "Box")
@@ -42,18 +42,15 @@ export default class CurrentLineHighlightStyle extends Feature {
 
   private applyClass() {
     const currentLineStyleClass = `ptm-current-line-highlight-${this.getSettingValue()}`;
-    console.debug("apply current line style ", currentLineStyleClass);
     for (const cl of this.getBodyClasses()) {
       this.tm.perWindowProps.bodyClasses.remove(cl);
     }
     this.tm.perWindowProps.bodyClasses.push(currentLineStyleClass);
-    console.debug(this.tm.perWindowProps.bodyClasses);
   }
 
   private changeCurrentLineHighlightStyle(
     newValue: CurrentLineHighlightStyleType
   ) {
-    console.debug("current line style", newValue);
     this.setSettingValue(newValue);
     this.applyClass();
     this.tm.saveSettings().catch((error) => {

@@ -54,7 +54,6 @@ export default class RestoreCursorPosition extends FeatureToggle {
   }
 
   async saveState() {
-    console.debug("Save cursor state");
     await this.tm.saveSettings();
   }
 
@@ -76,7 +75,6 @@ export default class RestoreCursorPosition extends FeatureToggle {
       return;
     }
     this.state[fileName] = st;
-    console.debug("setCursorState", fileName, st);
   }
 
   private onFileOpen = (file: TFile | null): void => {
@@ -131,11 +129,6 @@ export default class RestoreCursorPosition extends FeatureToggle {
                 Math.min(savedState.head, docLength)
               ),
             ]);
-            console.debug(
-              "Restore cursor position on file-open",
-              filePath,
-              clampedSelection
-            );
             cm.dispatch({ selection: clampedSelection });
           }
         }

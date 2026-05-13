@@ -1,0 +1,5 @@
+allowBuilds:
+  '@parcel/watcher': false
+  electron: false
+  esbuild: false
+  lefthook: false

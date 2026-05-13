@@ -13,7 +13,7 @@ export default class WritingFocusVignetteStyle extends Feature {
       setting
         .setName("Writing focus vignette style")
         .setDesc("The style of the vignette in writing focus mode")
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addDropdown((dropdown) =>
           dropdown
             .addOption(WRITING_FOCUS_VIGNETTE_STYLE.BOX, "Box")

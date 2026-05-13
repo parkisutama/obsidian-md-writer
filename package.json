@@ -1,8 +1,10 @@
 {
   "name": "md-writer",
   "version": "1.0.0",
+  "type": "module",
+  "packageManager": "pnpm@10.32.1",
   "obsidianMinAppVersion": "1.11.0",
-  "author": "Davis Riedel",
+  "author": "Parkis Utama",
   "repository": {
     "type": "git",
     "url": "https://github.com/parkisutama/obsidian-md-writer"
@@ -10,46 +12,68 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.2",
     "@codemirror/language": "^6.12.2",
-    "@codemirror/state": "^6.5.4",
-    "@codemirror/view": "^6.39.14",
-    "@types/bun": "^1.3.9",
+    "@codemirror/state": "6.5.0",
+    "@codemirror/view": "6.38.6",
+    "@eslint/json": "^0.14.0",
     "@types/codemirror": "^5.60.17",
     "@types/node": "^25.2.3",
-    "@typescript/native-preview": "^7.0.0-dev.20260218.1",
+    "@typescript-eslint/parser": "^8.59.3",
     "builtin-modules": "^5.0.0",
     "electron": "^40.4.1",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-obsidianmd": "^0.3.0",
     "lefthook": "^2.1.1",
     "obsidian": "^1.12.0",
     "rumdl": "^0.1.33",
     "sass": "^1.97.3",
     "stylelint": "^17.3.0",
     "stylelint-config-standard-scss": "^17.0.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.9.3",
-    "ultracite": "7.2.3"
+    "ultracite": "7.2.3",
+    "vitest": "^4.1.6"
   },
-  "description": "Typewriter scrolling, highlight of the current line, dimming of unfocused paragraphs and more",
+  "description": "High-precision drafting for Obsidian with typewriter scrolling, whitespace visualization, and outliner focus",
   "keywords": [
     "obsidian",
-    "typewriter"
+    "writing",
+    "outliner",
+    "markdown"
   ],
   "license": "MIT",
   "scripts": {
     "prepare": "lefthook install",
-    "lint": "biome check --write",
-    "lint:styles": "stylelint --fix \"src/**/*.scss\"",
-    "lint:md": "rumdl check --fix .",
-    "typecheck": "bun tsgo --noEmit",
-    "check": "bun run typecheck && bun run lint && bun run lint:styles && bun run lint:md",
-    "build": "bun ./scripts/build.ts",
-    "dev": "bun ./scripts/dev.ts",
-    "debug": "bun ./scripts/dev.ts --debug",
-    "deploy": "bun ./scripts/deploy.ts",
-    "release": "bun run check && bun ./scripts/release.ts",
-    "ci": "bun run build && bun ./scripts/generate-ci-artefacts.ts"
+    "lint": "biome check src scripts tests",
+    "lint:obsidian": "eslint src manifest.json LICENSE",
+    "lint:styles": "stylelint \"src/**/*.scss\"",
+    "lint:md": "node ./scripts/lint-md.mjs check .",
+    "fix": "pnpm run fix:biome && pnpm run fix:styles && pnpm run fix:md",
+    "fix:biome": "biome check --write src scripts tests",
+    "fix:styles": "stylelint --fix \"src/**/*.scss\"",
+    "fix:md": "node ./scripts/lint-md.mjs check --fix .",
+    "typecheck": "pnpm run typecheck:fast",
+    "typecheck:fast": "tsc --noEmit --incremental false",
+    "typecheck:ci": "tsc --noEmit --incremental false",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run lint:obsidian && pnpm run lint:styles && pnpm run lint:md",
+    "check:ci": "pnpm run typecheck:ci && pnpm run lint && pnpm run lint:obsidian && pnpm run lint:styles && pnpm run lint:md && pnpm run test && pnpm run build && pnpm run verify:artifacts",
+    "test": "node ./scripts/test.mjs",
+    "validate:release-tag": "node ./scripts/validate-release-tag.mjs",
+    "verify:artifacts": "node ./scripts/run-tsx.mjs ./scripts/verify-artifacts.ts",
+    "build": "node ./scripts/run-tsx.mjs ./scripts/build.ts",
+    "dev": "node ./scripts/run-tsx.mjs ./scripts/dev.ts",
+    "debug": "node ./scripts/run-tsx.mjs ./scripts/dev.ts --debug",
+    "deploy": "node ./scripts/run-tsx.mjs ./scripts/deploy.ts",
+    "release": "node ./scripts/run-tsx.mjs ./scripts/release.ts",
+    "ci": "pnpm run build && pnpm run verify:artifacts && node ./scripts/run-tsx.mjs ./scripts/generate-ci-artefacts.ts"
   },
-  "trustedDependencies": [
-    "@biomejs/biome",
-    "core-js",
-    "electron"
-  ]
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "electron",
+      "esbuild",
+      "lefthook",
+      "rumdl"
+    ]
+  }
 }
