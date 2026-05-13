@@ -13,9 +13,9 @@ export default class DimUnfocusedEditorsBehavior extends Feature {
       setting
         .setName("Dimming behavior in unfocused notes")
         .setDesc(
-          "How to dim paragraphs / sentences in notes / editors that your cursor is not on (e.g. if you have multiple notes open in split panes)"
+          "Choose how unfocused split panes dim paragraphs and sentences."
         )
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addDropdown((dropdown) =>
           dropdown
             .addOption(

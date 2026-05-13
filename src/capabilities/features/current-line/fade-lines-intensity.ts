@@ -9,7 +9,7 @@ export default class FadeLinesIntensity extends Feature {
       setting
         .setName("Intensity of the fade lines gradient")
         .setDesc("How soon lines shall be faded out")
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addSlider((slider) =>
           slider
             .setLimits(0, 100, 5)

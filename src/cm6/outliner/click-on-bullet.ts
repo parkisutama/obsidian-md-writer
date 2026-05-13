@@ -2,11 +2,19 @@ import { EditorSelection } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
 function isBulletPoint(e: HTMLElement): boolean {
-  return (
-    e instanceof HTMLSpanElement &&
-    (e.classList.contains("list-bullet") ||
-      e.classList.contains("cm-formatting-list"))
-  );
+  if (!e.instanceOf(HTMLSpanElement)) {
+    return false;
+  }
+  if (e.classList.contains("list-bullet")) {
+    return true;
+  }
+  // In source mode, Obsidian uses cm-formatting-list-ul / cm-formatting-list-ol
+  for (const cls of Array.from(e.classList)) {
+    if (cls.startsWith("cm-formatting-list")) {
+      return true;
+    }
+  }
+  return false;
 }
 
 export function createClickOnBulletHandler(
@@ -14,7 +22,11 @@ export function createClickOnBulletHandler(
 ) {
   return EditorView.domEventHandlers({
     click: (e: MouseEvent, view: EditorView) => {
-      if (!(e.target instanceof HTMLElement && isBulletPoint(e.target))) {
+      if (!(e.target instanceof HTMLElement)) {
+        return;
+      }
+      const target = e.target;
+      if (!isBulletPoint(target)) {
         return;
       }
 

@@ -13,7 +13,7 @@ export default class DimUnfocusedMode extends Feature {
       setting
         .setName("Dim unfocused mode")
         .setDesc("Choose to dim unfocused paragraphs or sentences")
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addDropdown((dropdown) =>
           dropdown
             .addOption(DIM_UNFOCUSED_MODE.PARAGRAPHS, "Paragraphs")

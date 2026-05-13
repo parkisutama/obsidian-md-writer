@@ -26,7 +26,7 @@ export class WritingFocusCommand extends ToggleCommand {
   onload() {
     this.tm.plugin.addRibbonIcon(
       "enter",
-      "Toggle Writing Focus",
+      "Toggle writing focus",
       (_event): void => {
         this.writingFocus.toggleFocusMode();
       }

@@ -29,7 +29,7 @@ export default abstract class CurrentLineHighlightColor extends Feature {
         .setDesc(
           `The color and opacity of the current line highlight in ${this.themeMode} themes`
         )
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addColorPicker((colorPicker) =>
           colorPicker.setValue(color).onChange((newColor) => {
             const currentOpacity = this.parseColor(

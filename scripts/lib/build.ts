@@ -1,7 +1,6 @@
-/// <reference types="bun-types" />
-
-import { mkdirSync } from "node:fs";
+import { copyFileSync, mkdirSync, writeFileSync } from "node:fs";
 import builtins from "builtin-modules";
+import esbuild from "esbuild";
 import { compile as sassCompile } from "sass";
 
 export interface BuildOptions {
@@ -32,16 +31,24 @@ export async function build({
   const scssResult = sassCompile(`${rootDir}/${srcDir}/${styles}`, {
     style: "compressed",
   });
-  await Bun.write(`${rootDir}/${outDir}/styles.css`, scssResult.css);
+  writeFileSync(`${rootDir}/${outDir}/styles.css`, scssResult.css);
+
+  console.log("Copying manifest");
+  copyFileSync(
+    `${rootDir}/manifest.json`,
+    `${rootDir}/${outDir}/manifest.json`
+  );
 
   // Build js
   console.log("Building main");
-  await Bun.build({
-    entrypoints: [`${rootDir}/${srcDir}/${main}`],
+  const esbuildFormat = format === "cjs" ? "cjs" : "esm";
+  await esbuild.build({
+    entryPoints: [`${rootDir}/${srcDir}/${main}`],
     outdir: `${rootDir}/${outDir}`,
+    bundle: true,
     minify: true,
-    target: "browser",
-    format,
+    platform: "browser",
+    format: esbuildFormat,
     drop: stripDebug ? ["console"] : [],
     external: [
       "obsidian",

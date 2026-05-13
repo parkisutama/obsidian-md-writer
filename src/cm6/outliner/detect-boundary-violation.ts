@@ -54,7 +54,7 @@ export function createBoundaryViolationDetector(
     if (touchedOutside && touchedInside) {
       const state = tr.state;
       // Deferred dispatch — cannot dispatch during a transaction
-      setTimeout(() => {
+      window.setTimeout(() => {
         const view = state.field(editorEditorField);
         onViolation(view);
       }, 0);

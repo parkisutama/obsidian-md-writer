@@ -1,8 +1,8 @@
-/// <reference types="bun-types" />
+import { readFileSync } from "node:fs";
 
-export async function getPackageMetadata() {
+export function getPackageMetadata() {
   console.log("Reading package.json");
-  const pkg = await Bun.file("package.json").json();
+  const pkg = JSON.parse(readFileSync("package.json", "utf-8"));
   const targetVersion = pkg.version;
   const minAppVersion = pkg.obsidianMinAppVersion;
   return { targetVersion, minAppVersion };

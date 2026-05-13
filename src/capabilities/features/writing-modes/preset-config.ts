@@ -47,7 +47,7 @@ export default class WritingModePresetConfig extends Feature {
         settingGroup.addSetting((setting) =>
           setting
             .setName(FEATURE_LABELS[featureKey])
-            .setClass("typewriter-mode-setting")
+            .setClass("md-writer-setting")
             .addToggle((toggle) =>
               toggle.setValue(preset[featureKey]).onChange((newValue) => {
                 this.tm.settings.writingMode.presets[mode][featureKey] =

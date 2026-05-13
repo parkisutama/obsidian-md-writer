@@ -2,6 +2,58 @@ import type { EditorView, Rect } from "@codemirror/view";
 import type TypewriterModeLib from "@/lib";
 import { getEditorDom, getScrollDom } from "./selectors";
 
+interface TypewriterScrollOffsetInput {
+  activeLineOffset: number;
+  isOnlyMaintainTypewriterOffsetWhenReachedEnabled: boolean;
+  scrollTop: number;
+  typewriterOffset: number;
+}
+
+interface KeepLinesScrollOffsetInput {
+  activeLineOffset: number;
+  editorHeight: number;
+  lineHeight: number;
+  linesAboveAndBelow: number;
+  scrollTop: number;
+}
+
+export function calculateTypewriterScrollOffset({
+  activeLineOffset,
+  typewriterOffset,
+  scrollTop,
+  isOnlyMaintainTypewriterOffsetWhenReachedEnabled,
+}: TypewriterScrollOffsetInput): number {
+  if (!isOnlyMaintainTypewriterOffsetWhenReachedEnabled) {
+    return typewriterOffset;
+  }
+  if (activeLineOffset < 0) {
+    return 0;
+  }
+  return scrollTop + activeLineOffset < typewriterOffset
+    ? Math.min(typewriterOffset, activeLineOffset)
+    : typewriterOffset;
+}
+
+export function calculateKeepLinesScrollOffset({
+  activeLineOffset,
+  editorHeight,
+  lineHeight,
+  linesAboveAndBelow,
+  scrollTop,
+}: KeepLinesScrollOffsetInput): number {
+  const lowerBound = lineHeight * linesAboveAndBelow;
+  const upperBound = editorHeight - lineHeight * (linesAboveAndBelow + 1);
+  const belowLowerBound = scrollTop !== 0 && activeLineOffset < lowerBound;
+  const aboveUpperBound = activeLineOffset > upperBound;
+  if (belowLowerBound) {
+    return lowerBound;
+  }
+  if (aboveUpperBound) {
+    return upperBound;
+  }
+  return activeLineOffset;
+}
+
 export class TypewriterOffsetCalculator {
   protected tm: TypewriterModeLib;
   protected view: EditorView;
@@ -60,12 +112,12 @@ export class TypewriterOffsetCalculator {
         .isOnlyMaintainTypewriterOffsetWhenReachedEnabled;
 
     if (isTypewriterScrollEnabled) {
-      return this.calculateTypewriterScrollOffset(
+      return calculateTypewriterScrollOffset({
         activeLineOffset,
         typewriterOffset,
-        scrollDom,
-        isOnlyMaintainTypewriterOffsetWhenReachedEnabled
-      );
+        scrollTop: scrollDom.scrollTop,
+        isOnlyMaintainTypewriterOffsetWhenReachedEnabled,
+      });
     }
 
     if (isKeepLinesAboveAndBelowEnabled) {
@@ -79,23 +131,6 @@ export class TypewriterOffsetCalculator {
     return activeLineOffset;
   }
 
-  private calculateTypewriterScrollOffset(
-    activeLineOffset: number,
-    typewriterOffset: number,
-    scrollDom: HTMLElement,
-    isOnlyMaintainTypewriterOffsetWhenReachedEnabled: boolean
-  ): number {
-    if (!isOnlyMaintainTypewriterOffsetWhenReachedEnabled) {
-      return typewriterOffset;
-    }
-    if (activeLineOffset < 0) {
-      return 0;
-    }
-    return scrollDom.scrollTop + activeLineOffset < typewriterOffset
-      ? Math.min(typewriterOffset, activeLineOffset)
-      : typewriterOffset;
-  }
-
   private calculateKeepLinesScrollOffset(
     activeLineOffset: number,
     editorDom: HTMLElement,
@@ -103,20 +138,13 @@ export class TypewriterOffsetCalculator {
   ): number {
     const linesAboveAndBelow =
       this.tm.settings.keepLinesAboveAndBelow.linesAboveAndBelow;
-    const lowerBound = this.view.defaultLineHeight * linesAboveAndBelow;
-    const upperBound =
-      editorDom.clientHeight -
-      this.view.defaultLineHeight * (linesAboveAndBelow + 1);
-    const belowLowerBound =
-      scrollDom.scrollTop !== 0 && activeLineOffset < lowerBound;
-    const aboveUpperBound = activeLineOffset > upperBound;
-    if (belowLowerBound) {
-      return lowerBound;
-    }
-    if (aboveUpperBound) {
-      return upperBound;
-    }
-    return activeLineOffset;
+    return calculateKeepLinesScrollOffset({
+      activeLineOffset,
+      editorHeight: editorDom.clientHeight,
+      lineHeight: this.view.defaultLineHeight,
+      linesAboveAndBelow,
+      scrollTop: scrollDom.scrollTop,
+    });
   }
 
   getTypewriterPositionData() {

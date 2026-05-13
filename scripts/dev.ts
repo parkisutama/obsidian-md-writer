@@ -1,11 +1,10 @@
-/// <reference types="bun-types" />
-
 import { parseArgs } from "node:util";
 import { build } from "./lib/build";
+import { deployPlugin } from "./lib/deploy-plugin";
 import { setupTestVault } from "./lib/setup-test-vault";
 
 const { values: args } = parseArgs({
-  args: Bun.argv,
+  args: process.argv.slice(2),
   options: {
     debug: {
       type: "boolean",
@@ -15,6 +14,7 @@ const { values: args } = parseArgs({
   allowPositionals: true,
 });
 
-await build({ stripDebug: args.debug });
+await build({ stripDebug: !args.debug });
 
-await setupTestVault("./dist", "obsidian-typewriter-mode", "./test-vault");
+setupTestVault("./dist", "md-writer", "./test-vault");
+deployPlugin();

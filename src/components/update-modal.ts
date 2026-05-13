@@ -1,8 +1,12 @@
 // Adapted from https://github.com/chhoumann/quickadd/blob/master/src/gui/UpdateModal/UpdateModal.ts
 
-/// <reference types="bun-types" />
-
-import { type App, Component, MarkdownRenderer, Modal } from "obsidian";
+import {
+  type App,
+  Component,
+  MarkdownRenderer,
+  Modal,
+  requestUrl,
+} from "obsidian";
 import fundingText from "@/texts/Funding.md" with { type: "text" };
 import updateNotice from "@/texts/UpdateNotice.md" with { type: "text" };
 
@@ -11,6 +15,24 @@ interface Release {
   draft: boolean;
   prerelease: boolean;
   tag_name: string;
+}
+
+const GIT_SUFFIX_REGEX = /\.git$/u;
+const GITHUB_REPO_URL_REGEX =
+  /^https:\/\/github\.com\/(?<owner>[^/]+)\/(?<repo>[^/]+)$/u;
+
+function parseGitHubRepo(repoUrl: string) {
+  const normalizedUrl = repoUrl.trim().replace(GIT_SUFFIX_REGEX, "");
+  const match = GITHUB_REPO_URL_REGEX.exec(normalizedUrl);
+
+  if (!match?.groups) {
+    throw new Error(`Unsupported GitHub repository URL: ${repoUrl}`);
+  }
+
+  return {
+    owner: match.groups.owner,
+    repo: match.groups.repo,
+  };
 }
 
 /**
@@ -30,13 +52,19 @@ async function getReleaseNotesAfter(
   releaseTagName: string | null,
   includePreReleases: boolean
 ): Promise<Release[]> {
-  const response = await fetch(
-    `https://api.github.com/repos/${repoOwner}/${repoName}/releases`
-  );
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const releases: Release[] | { message: string } = await response.json();
+  const response = await requestUrl({
+    url: `https://api.github.com/repos/${repoOwner}/${repoName}/releases`,
+    method: "GET",
+    headers: {
+      Accept: "application/vnd.github+json",
+    },
+  });
+  const releases = response.json as Release[] | { message: string };
 
-  if ((!response.ok && "message" in releases) || !Array.isArray(releases)) {
+  if (
+    (response.status >= 400 && "message" in releases) ||
+    !Array.isArray(releases)
+  ) {
     throw new Error(
       `Failed to fetch releases: ${releases.message ?? "Unknown error"}`
     );
@@ -65,22 +93,27 @@ async function getReleaseNotesAfter(
 export class UpdateModal extends Modal {
   private readonly currentVersion: string;
   private readonly previousVersion: string | null;
+  private readonly repoUrl: string;
+  private markdownRenderComponent: Component | null = null;
 
   constructor(
     app: App,
     currentVersion: string,
-    previousVersion: string | null
+    previousVersion: string | null,
+    repoUrl: string
   ) {
     super(app);
     this.currentVersion = currentVersion;
     this.previousVersion = previousVersion;
+    this.repoUrl = repoUrl;
   }
 
   private fetchAndDisplayReleaseNotes() {
     const isCurrentVersionBeta = this.currentVersion.includes("-");
+    const { owner, repo } = parseGitHubRepo(this.repoUrl);
     getReleaseNotesAfter(
-      "davisriedel",
-      "obsidian-typewriter-mode",
+      owner,
+      repo,
       this.previousVersion,
       isCurrentVersionBeta // if the current version is a beta version, include pre-releases
     )
@@ -98,6 +131,7 @@ export class UpdateModal extends Modal {
 
   override onOpen() {
     const { contentEl } = this;
+    this.clearRenderedMarkdown();
     contentEl.empty();
     contentEl.createEl("h2", {
       text: "Fetching release notes...",
@@ -106,8 +140,18 @@ export class UpdateModal extends Modal {
     this.fetchAndDisplayReleaseNotes();
   }
 
+  override onClose(): void {
+    this.clearRenderedMarkdown();
+  }
+
+  private clearRenderedMarkdown(): void {
+    this.markdownRenderComponent?.unload();
+    this.markdownRenderComponent = null;
+  }
+
   private displayReleaseNotes(releases: Release[]): void {
     const { contentEl } = this;
+    this.clearRenderedMarkdown();
     contentEl.empty();
     contentEl.classList.add("ptm-update-modal-container");
     const contentDiv = contentEl.createDiv("ptm-update-modal");
@@ -121,17 +165,21 @@ export class UpdateModal extends Modal {
       .replace("{{funding}}", fundingText)
       .replace("{{release-notes}}", releaseNotes);
 
+    const renderComponent = new Component();
+    this.markdownRenderComponent = renderComponent;
+
     MarkdownRenderer.render(
       this.app,
       markdownStr,
       contentDiv,
       this.app.vault.getRoot().path,
-      new Component()
+      renderComponent
     );
   }
 
   private displayError(error: Error): void {
     const { contentEl } = this;
+    this.clearRenderedMarkdown();
     contentEl.empty();
     contentEl.classList.add("ptm-update-modal-container");
     const contentDiv = contentEl.createDiv("ptm-update-modal");

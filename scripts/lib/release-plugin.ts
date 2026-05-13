@@ -1,16 +1,22 @@
-/// <reference types="bun-types" />
-
-import { $ } from "bun";
+import { execSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
 import { getPackageMetadata } from "./get-package-metadata";
+import {
+  assertObsidianReleaseVersion,
+  validateReleaseMetadata,
+} from "./release-validation";
 import { updateManifests } from "./update-manifests";
 
-export async function releasePlugin() {
+export function releasePlugin() {
   console.log("Release script started");
 
-  const { targetVersion, minAppVersion } = await getPackageMetadata();
+  const { targetVersion, minAppVersion } = getPackageMetadata();
+  assertObsidianReleaseVersion(targetVersion);
 
   console.log("Checking git status");
-  const result = await $`git tag -l "${targetVersion}"`.text();
+  const result = execSync(`git tag -l "${targetVersion}"`, {
+    encoding: "utf-8",
+  });
   if (result.trim() === targetVersion) {
     console.error(`Version v${targetVersion} is already published. Exiting...`);
     process.exit(1);
@@ -18,10 +24,10 @@ export async function releasePlugin() {
   console.log(`Releasing v${targetVersion}`);
 
   console.log("Updating manifests");
-  await updateManifests(targetVersion, minAppVersion);
+  updateManifests(targetVersion, minAppVersion);
 
   console.log("Reading changelog");
-  const changelog = await Bun.file("CHANGELOG.md").text();
+  const changelog = readFileSync("CHANGELOG.md", "utf-8");
   const checkChangelogRegex = new RegExp(`^## ${targetVersion}$`, "m");
   if (!checkChangelogRegex.test(changelog)) {
     console.error(`Changelog for v${targetVersion} not found`);
@@ -33,16 +39,30 @@ export async function releasePlugin() {
 
   // update versions.json with target version and minAppVersion from manifest.json
   console.log("Updating versions.json");
-  const versions = await Bun.file("versions.json").json();
+  const versions = JSON.parse(readFileSync("versions.json", "utf-8"));
   versions[targetVersion] = minAppVersion;
-  await Bun.write("versions.json", JSON.stringify(versions, null, 2));
+  writeFileSync("versions.json", JSON.stringify(versions, null, 2));
+
+  console.log("Validating release metadata");
+  validateReleaseMetadata(targetVersion);
+
+  console.log("Running release gates");
+  execSync("pnpm run check:ci", {
+    stdio: "inherit",
+  });
 
   console.log("Committing new version");
-  await $`git add package.json manifest.json versions.json CHANGELOG.md`.quiet();
-  await $`git commit --no-verify -m "Release v${targetVersion}"`.quiet();
+  execSync("git add package.json manifest.json versions.json CHANGELOG.md", {
+    stdio: "ignore",
+  });
+  execSync(`git commit --no-verify -m "Release v${targetVersion}"`, {
+    stdio: "ignore",
+  });
 
   console.log("Tagging new version");
-  await $`git tag -a "${targetVersion}" -m "${targetVersion}"`.quiet();
+  execSync(`git tag -a "${targetVersion}" -m "${targetVersion}"`, {
+    stdio: "ignore",
+  });
 
   console.log("Release script completed");
   console.info(

@@ -14,6 +14,7 @@ export class WritingFocus {
 
   private readonly maximizedClass = "ptm-maximized";
   private readonly focusModeClass = "ptm-focus-mode";
+  private readonly hiddenWorkspaceSplitClass = "ptm-writing-focus-hidden-split";
 
   private readonly vignetteElClass = "ptm-writing-focus-vignette-element";
   private readonly vignetteStyleAttr = "data-ptm-writing-focus-vignette-style";
@@ -112,6 +113,28 @@ export class WritingFocus {
     if (document.body.classList.contains(this.focusModeClass)) {
       document.body.classList.remove(this.focusModeClass);
     }
+    this.resetWorkspaceSplitVisibility();
+  }
+
+  private updateWorkspaceSplitVisibility() {
+    Array.from(
+      document.querySelectorAll(`.${this.focusModeClass} .workspace-split`)
+    ).forEach((node) => {
+      const workspaceSplit = node as HTMLElement;
+      const hasActiveKids = workspaceSplit.querySelector(".mod-active");
+      workspaceSplit.classList.toggle(
+        this.hiddenWorkspaceSplitClass,
+        !hasActiveKids
+      );
+    });
+  }
+
+  private resetWorkspaceSplitVisibility() {
+    Array.from(document.querySelectorAll(".workspace-split")).forEach(
+      (node) => {
+        node.classList.remove(this.hiddenWorkspaceSplitClass);
+      }
+    );
   }
 
   private enableFocusModeForView(view: ItemView) {
@@ -134,17 +157,7 @@ export class WritingFocus {
     );
 
     if (document.body.classList.contains(this.focusModeClass)) {
-      Array.from(
-        document.querySelectorAll(`.${this.focusModeClass} .workspace-split`)
-      ).forEach((node) => {
-        const theNode = node as HTMLElement;
-        const hasActiveKids = theNode.querySelector(".mod-active");
-        if (hasActiveKids) {
-          theNode.style.display = "flex";
-        } else {
-          theNode.style.display = "none";
-        }
-      });
+      this.updateWorkspaceSplitVisibility();
     }
 
     if (this.tm.settings.writingFocus.doesWritingFocusShowVignette) {
@@ -164,13 +177,7 @@ export class WritingFocus {
     }
 
     this.restoreSplits();
-
-    Array.from(document.querySelectorAll(".workspace-split")).forEach(
-      (node) => {
-        const theNode = node as HTMLElement;
-        theNode.style.display = "flex";
-      }
-    );
+    this.resetWorkspaceSplitVisibility();
 
     if (this.tm.settings.writingFocus.doesWritingFocusShowVignette) {
       this.removeVignette(view);

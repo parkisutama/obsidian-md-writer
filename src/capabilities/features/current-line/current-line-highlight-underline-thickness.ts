@@ -12,7 +12,7 @@ export default class CurrentLineHighlightUnderlineThickness extends Feature {
         .setDesc(
           "The thickness of the underline that highlights the current line"
         )
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addSlider((slider) =>
           slider
             .setLimits(1, 5, 1)

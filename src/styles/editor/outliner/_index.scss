@@ -17,33 +17,3 @@
     padding-right: 0;
   }
 }
-
-// Breadcrumb panel styling
-.cm-panels {
-  border-bottom-color: var(--background-modifier-border);
-}
-
-.ptm-outliner-header {
-  display: flex;
-  flex-wrap: wrap;
-  margin: var(--file-margins);
-  margin-top: var(--size-4-2);
-  margin-bottom: var(--size-4-2);
-}
-
-.ptm-outliner-title {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  cursor: pointer;
-  color: var(--text-accent);
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.ptm-outliner-delimiter {
-  display: inline-block;
-  padding: 0 var(--size-4-2);
-  color: var(--text-faint);
-}

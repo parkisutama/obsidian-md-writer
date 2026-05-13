@@ -12,7 +12,6 @@ export class OutlinerUnfocus extends EditorCommand {
       name: this.commandTitle,
       icon: "list",
       editorCallback: this.onCommand.bind(this),
-      hotkeys: [{ modifiers: ["Mod", "Shift"], key: "." }],
     });
   }
 

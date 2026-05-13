@@ -13,7 +13,7 @@ export default class HemingwayModeStatusBarText extends Feature {
       setting
         .setName(this.settingTitle)
         .setDesc(this.settingDesc)
-        .setClass("typewriter-mode-setting")
+        .setClass("md-writer-setting")
         .addText((text) =>
           text
             .setValue(this.getSettingValue() as string)

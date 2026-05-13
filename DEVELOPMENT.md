@@ -4,20 +4,24 @@
 
 ## Prerequisites
 
-1. Install `Bun`: <https://bun.sh/>
+1. Install [Node.js](https://nodejs.org/) (v22+)
+2. Install [pnpm](https://pnpm.io/): `npm install -g pnpm`
 
 ## Setup
 
 1. Fork this repo and clone your fork
-2. Install dependencies with `bun install`
+2. Install dependencies with `pnpm install`
 
 ## Building and Testing
 
 1. Build and Setup Test Vault
-   - Build with `bun run build`
-   - Use `bun run dev` to build and update test vault in one step
-   - Use `bun run debug` to enable `console.debug` statements _(all other commands strip these)_
-   - Deploy to a custom Obsidian vault with `bun run deploy` _(requires a `.env` file with `OBSIDIAN_PLUGIN_DIR=<path>`)_
+   - Build with `pnpm run build`
+   - Use `pnpm run dev` to build, update the test vault, and deploy to the
+     configured Obsidian plugin folder in one step
+   - Use `pnpm run debug` to enable `console.debug` statements _(all other commands strip these)_
+   - Deploy the current `dist` output to a custom Obsidian vault with
+     `pnpm run deploy` _(requires a `.env` file with
+     `OBSIDIAN_VAULT_PLUGIN_PATH=<path>`)_
 
 2. Test in Obsidian
    - Open the test vault in Obsidian
@@ -27,15 +31,15 @@
 
 | Command | Description |
 | --------- | ------------- |
-| `bun run check` | Run all checks (typecheck + lint + stylelint + markdownlint) |
-| `bun run typecheck` | TypeScript type check |
-| `bun run lint` | Biome lint & format (auto-fix) |
-| `bun run lint:styles` | SCSS linting (auto-fix) |
-| `bun run lint:md` | Markdown linting (auto-fix) |
+| `pnpm run check` | Run all checks (typecheck + lint + stylelint + markdownlint) |
+| `pnpm run typecheck` | TypeScript type check |
+| `pnpm run lint` | Biome lint & format (auto-fix) |
+| `pnpm run lint:styles` | SCSS linting (auto-fix) |
+| `pnpm run lint:md` | Markdown linting (auto-fix) |
 
-A pre-commit hook via [Lefthook](https://github.com/evilmartians/lefthook) runs `bun run check` automatically.
+A pre-commit hook via [Lefthook](https://github.com/evilmartians/lefthook) runs `pnpm run check` automatically.
 
 ## Releasing
 
-- `bun run release` — Run all checks, then create a release (tag + GitHub release)
-- `bun run ci` — CI build (used in GitHub Actions)
+- `pnpm run release` — Run all checks, then create a release (tag + GitHub release)
+- `pnpm run ci` — CI build (used in GitHub Actions)

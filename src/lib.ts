@@ -1,11 +1,17 @@
 import type { Extension } from "@codemirror/state";
-import type { EditorView } from "@codemirror/view";
+import { EditorView } from "@codemirror/view";
 import { Notice, type Plugin } from "obsidian";
-import { createOutlinerExtension } from "@/cm6/outliner";
 import {
-  hideBreadcrumbs,
-  showBreadcrumbs,
-} from "@/cm6/outliner/breadcrumb-panel";
+  getFirstChild,
+  getNextSibling,
+  getParentItem,
+  getPreviousSibling,
+  resolveListItem,
+} from "@/cm6/list-service";
+import {
+  createOutlinerExtension,
+  getOutlinerReconfigureEffects,
+} from "@/cm6/outliner";
 import { calculateOutlinerRange } from "@/cm6/outliner/calculate-range";
 import {
   dispatchOutlinerFocus,
@@ -15,6 +21,7 @@ import type { PerWindowProps } from "@/cm6/per-window-props";
 import createTypewriterModeViewPlugin from "@/cm6/plugin";
 import { createShowWhitespaceExtension } from "@/cm6/show-whitespace";
 import { createWarnLongLineExtension } from "@/cm6/warn-long-line";
+import { OUTLINE_VIEW_TYPE, OutlineView } from "@/components/outline-view";
 import TypewriterModeSettingTab from "@/components/settings-tab";
 import type { AbstractCommand } from "./capabilities/base/abstract-command";
 import type { Feature } from "./capabilities/base/feature";
@@ -76,8 +83,49 @@ export default class TypewriterModeLib {
     await this.loadSettings();
     await this.saveSettings(); // if default settings were loaded
 
+    this.registerOutlineView();
     this.loadPerWindowProps();
     this.loadEditorExtension();
+  }
+
+  private registerOutlineView() {
+    this.plugin.registerView(
+      OUTLINE_VIEW_TYPE,
+      (leaf) => new OutlineView(leaf, this)
+    );
+  }
+
+  private getOutlineViews(): OutlineView[] {
+    return this.plugin.app.workspace
+      .getLeavesOfType(OUTLINE_VIEW_TYPE)
+      .map((leaf) => leaf.view)
+      .filter((view): view is OutlineView => view instanceof OutlineView);
+  }
+
+  private refreshOutlineViews() {
+    for (const view of this.getOutlineViews()) {
+      view.requestRefresh();
+    }
+  }
+
+  async ensureOutlineView(): Promise<OutlineView | null> {
+    const existingView = this.getOutlineViews()[0];
+    if (existingView) {
+      return existingView;
+    }
+
+    const leaf = this.plugin.app.workspace.getRightLeaf(false);
+    if (!leaf) {
+      return null;
+    }
+
+    await leaf.setViewState({
+      type: OUTLINE_VIEW_TYPE,
+      active: true,
+    });
+
+    const createdView = leaf.view;
+    return createdView instanceof OutlineView ? createdView : null;
   }
 
   loadPerWindowProps() {
@@ -85,11 +133,9 @@ export default class TypewriterModeLib {
     for (const category of Object.values(this.features)) {
       for (const feature of Object.values(category)) {
         feature.load();
-        console.debug(feature.settingKey, feature.getBodyClasses());
         allBodyClasses = allBodyClasses.concat(feature.getBodyClasses());
       }
     }
-    console.debug("allBodyClasses", allBodyClasses);
     this.perWindowProps.allBodyClasses = allBodyClasses;
     for (const command of Object.values(this.commands)) {
       command.load();
@@ -124,7 +170,7 @@ export default class TypewriterModeLib {
     const manifestDir = this.plugin.manifest.dir;
     if (!manifestDir) {
       console.error(
-        "Typewriter Mode: Unable to determine plugin manifest directory."
+        "MD Writer: Unable to determine plugin manifest directory."
       );
       return;
     }
@@ -147,11 +193,18 @@ export default class TypewriterModeLib {
   }
 
   reconfigureOutliner() {
-    this.editorExtensions[2] = createOutlinerExtension(
+    const effects = getOutlinerReconfigureEffects(
       this.settings.outliner,
       (view, pos) => this.outlinerFocusAtPosition(view, pos)
     );
-    this.plugin.app.workspace.updateOptions();
+
+    for (const leaf of this.plugin.app.workspace.getLeavesOfType("markdown")) {
+      const editor = (leaf.view as unknown as { editor?: { cm?: EditorView } })
+        .editor;
+      if (editor?.cm instanceof EditorView) {
+        editor.cm.dispatch({ effects });
+      }
+    }
   }
 
   outlinerFocusAtCursor(view: EditorView) {
@@ -167,7 +220,7 @@ export default class TypewriterModeLib {
 
     if (!(config.foldHeading && config.foldIndent)) {
       new Notice(
-        'To use outliner focus, enable "Fold heading" and "Fold indent" in Settings → Editor'
+        'To use outliner focus, enable "fold heading" and "fold indent" in settings → editor'
       );
       return;
     }
@@ -182,21 +235,59 @@ export default class TypewriterModeLib {
     }
 
     dispatchOutlinerFocus(view, range.from, range.to);
-
-    if (this.settings.outliner.isOutlinerBreadcrumbsEnabled) {
-      const navigateCallback = (v: EditorView, crumbPos: number | null) => {
-        if (crumbPos === null) {
-          this.outlinerUnfocus(v);
-        } else {
-          this.outlinerFocusAtPosition(v, crumbPos);
-        }
-      };
-      showBreadcrumbs(view, range.from, navigateCallback);
-    }
+    this.refreshOutlineViews();
   }
 
   outlinerUnfocus(view: EditorView) {
-    hideBreadcrumbs(view);
     dispatchOutlinerUnfocus(view);
+    this.refreshOutlineViews();
+  }
+
+  focusOutlinerRelation(
+    view: EditorView,
+    relation: "parent" | "first-child" | "next-sibling" | "previous-sibling"
+  ) {
+    const currentItem = resolveListItem(
+      view.state,
+      view.state.selection.main.head
+    );
+    if (!currentItem) {
+      return false;
+    }
+
+    let targetItem: ReturnType<typeof resolveListItem> = null;
+    if (relation === "parent") {
+      targetItem = getParentItem(view.state, currentItem);
+    } else if (relation === "first-child") {
+      targetItem = getFirstChild(view.state, currentItem);
+    } else if (relation === "next-sibling") {
+      targetItem = getNextSibling(view.state, currentItem);
+    } else {
+      targetItem = getPreviousSibling(view.state, currentItem);
+    }
+
+    if (!targetItem) {
+      return false;
+    }
+
+    this.outlinerFocusAtPosition(view, targetItem.from);
+    return true;
+  }
+
+  async revealActiveOutlineNode(focus = true) {
+    const outlineView = await this.ensureOutlineView();
+    outlineView?.revealActiveNode(focus);
+    return outlineView !== null;
+  }
+
+  async setOutlineFilterMode(mode: "all" | "branch" | "tasks") {
+    const outlineView = await this.ensureOutlineView();
+    outlineView?.setFilterMode(mode);
+    return outlineView !== null;
+  }
+
+  async cycleOutlineFilterMode() {
+    const outlineView = await this.ensureOutlineView();
+    return outlineView?.cycleFilterMode() ?? null;
   }
 }
