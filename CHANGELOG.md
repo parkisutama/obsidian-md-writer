@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.1.0
+
+### Added
+
+- Add GitHub-style heading anchor compatibility for Reading Mode and Live Preview.
+- Add a Compatibility settings tab with a toggle for GFM anchor handling.
+- Add tests for Unicode slugs, duplicate heading suffixes, anchor parsing, and target resolution.
+
+### Fixed
+
+- Navigate Live Preview GFM anchor clicks without Obsidian's yellow subpath highlight.
+- Move the editor cursor to the resolved Live Preview heading instead of only scrolling the target into view.
+
 ## 1.0.1
 
 ### Added
