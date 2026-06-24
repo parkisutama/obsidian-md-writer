@@ -19,7 +19,7 @@
     "@types/node": "^25.2.3",
     "@typescript-eslint/parser": "^8.59.3",
     "builtin-modules": "^5.0.0",
-    "electron": "^40.4.1",
+    "electron": "^40.8.5",
     "esbuild": "^0.25.0",
     "eslint": "^9.39.4",
     "eslint-plugin-obsidianmd": "^0.3.0",
