@@ -655,16 +655,22 @@ class TypewriterModeCM6Plugin {
 
     this.tm
       .getRestoreCursorPositionFeature()
-      .setCursorState(view.state.selection.main);
+      .setCursorState(view.state.selection.main, view);
   }
 
   private restoreCursorPosition(view: EditorView) {
+    if (
+      !this.tm.settings.restoreCursorPosition.isRestoreCursorPositionEnabled
+    ) {
+      return;
+    }
+
     const rcp = this.tm.getRestoreCursorPositionFeature();
 
     // Persite the previous state everytime a new file is opened
     rcp.saveState(); // NOTE: async function is intentionally not awaited
 
-    const fileName = this.tm.plugin.app.workspace.getActiveFile()?.path;
+    const fileName = rcp.getFilePathForEditorView(view);
 
     if (fileName) {
       const st = rcp.state[fileName];
@@ -678,7 +684,11 @@ class TypewriterModeCM6Plugin {
           );
 
         if (!containsFlashingSpan) {
-          view.dispatch({ selection: st });
+          const clampedSelection = rcp.createClampedSelection(
+            st,
+            view.state.doc.length
+          );
+          view.dispatch({ selection: clampedSelection });
         }
       }
     }

@@ -5,6 +5,16 @@ import type { EditorView } from "@codemirror/view";
 import type { TAbstractFile, TFile } from "obsidian";
 import { FeatureToggle } from "@/capabilities/base/feature-toggle";
 
+type ObsidianEventHandler = (...data: unknown[]) => unknown;
+
+function clampCursorPosition(position: number, docLength: number): number {
+  if (!Number.isFinite(position)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.min(position, docLength));
+}
+
 export default class RestoreCursorPosition extends FeatureToggle {
   readonly settingKey =
     "restoreCursorPosition.isRestoreCursorPositionEnabled" as const;
@@ -20,6 +30,23 @@ export default class RestoreCursorPosition extends FeatureToggle {
 
   set state(value: Record<string, SelectionRange>) {
     this.tm.settings.restoreCursorPosition.cursorPositions = value;
+  }
+
+  getFilePathForEditorView(cm: EditorView): string | null {
+    const leaves = this.tm.plugin.app.workspace.getLeavesOfType("markdown");
+
+    for (const leaf of leaves) {
+      const markdownView = leaf.view as unknown as {
+        editor?: { cm?: EditorView };
+        file?: TFile | null;
+      };
+
+      if (markdownView.editor?.cm === cm) {
+        return markdownView.file?.path ?? null;
+      }
+    }
+
+    return null;
   }
 
   override enable(): void {
@@ -43,38 +70,62 @@ export default class RestoreCursorPosition extends FeatureToggle {
   }
 
   override disable(): void {
-    this.saveState();
+    this.saveState().catch((error: unknown) => {
+      console.error("Failed to save cursor positions:", error);
+    });
     this.tm.plugin.app.workspace.off("quit", this.saveState);
-    // @ts-expect-error
-    this.tm.plugin.app.workspace.off("rename", this.onRenameFile);
-    // @ts-expect-error
-    this.tm.plugin.app.workspace.off("delete", this.onDeleteFile);
-    // @ts-expect-error
-    this.tm.plugin.app.workspace.off("file-open", this.onFileOpen);
+    this.tm.plugin.app.vault.off(
+      "rename",
+      this.onRenameFile as ObsidianEventHandler
+    );
+    this.tm.plugin.app.vault.off(
+      "delete",
+      this.onDeleteFile as ObsidianEventHandler
+    );
+    this.tm.plugin.app.workspace.off(
+      "file-open",
+      this.onFileOpen as ObsidianEventHandler
+    );
   }
 
-  async saveState() {
+  saveState = async (): Promise<void> => {
     await this.tm.saveSettings();
-  }
+  };
 
-  private onRenameFile(file: TAbstractFile, oldPath: string) {
+  private onRenameFile = (file: TAbstractFile, oldPath: string): void => {
     const newName = file.path;
     const oldName = oldPath;
-    this.state[newName] = this.state[oldName];
-    delete this.state[oldName];
-  }
+    const savedState = this.state[oldName];
+    if (!savedState) {
+      return;
+    }
 
-  private onDeleteFile(file: TAbstractFile) {
+    this.state[newName] = savedState;
+    delete this.state[oldName];
+  };
+
+  private onDeleteFile = (file: TAbstractFile): void => {
     const fileName = file.path;
     delete this.state[fileName];
-  }
+  };
 
-  setCursorState(st: SelectionRange) {
-    const fileName = this.tm.plugin.app.workspace.getActiveFile()?.path;
+  setCursorState(st: SelectionRange, view?: EditorView) {
+    const fileName = view
+      ? this.getFilePathForEditorView(view)
+      : this.tm.plugin.app.workspace.getActiveFile()?.path;
     if (!fileName) {
       return;
     }
     this.state[fileName] = st;
+  }
+
+  createClampedSelection(savedState: SelectionRange, docLength: number) {
+    return EditorSelection.create([
+      EditorSelection.range(
+        clampCursorPosition(savedState.anchor, docLength),
+        clampCursorPosition(savedState.head, docLength)
+      ),
+    ]);
   }
 
   private onFileOpen = (file: TFile | null): void => {
@@ -109,10 +160,10 @@ export default class RestoreCursorPosition extends FeatureToggle {
         }
 
         const cm = editor.cm;
-        const currentFile = this.tm.plugin.app.workspace.getActiveFile();
+        const currentFile = this.getFilePathForEditorView(cm);
 
         // Only restore if this view is showing the file we just opened
-        if (currentFile?.path === filePath) {
+        if (currentFile === filePath) {
           const savedState = this.state[filePath];
 
           // Check for flashing span (link anchor highlighting)
@@ -123,12 +174,10 @@ export default class RestoreCursorPosition extends FeatureToggle {
 
           if (!containsFlashingSpan && savedState) {
             const docLength = cm.state.doc.length;
-            const clampedSelection = EditorSelection.create([
-              EditorSelection.range(
-                Math.min(savedState.anchor, docLength),
-                Math.min(savedState.head, docLength)
-              ),
-            ]);
+            const clampedSelection = this.createClampedSelection(
+              savedState,
+              docLength
+            );
             cm.dispatch({ selection: clampedSelection });
           }
         }
