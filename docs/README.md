@@ -12,6 +12,7 @@ Dokumentasi ini memakai kerangka **Diataxis** agar isi repo bisa tumbuh dengan s
 - Tutorial: [Ship a change from branch to GitHub release](./tutorials/ship-a-change-from-branch-to-release.md)
 - How-to: [Start a feature or bugfix](./how-to/start-a-feature-or-bugfix.md)
 - How-to: [Run QA before merge or release](./how-to/run-qa-before-merge-or-release.md)
+- How-to: [Commit, push, and release a change](./how-to/commit-push-and-release.md)
 - How-to: [Create a GitHub release for BRAT and Obsidian](./how-to/create-a-github-release.md)
 - Explanation: [SDLC for this plugin](./explanation/sdlc-for-this-plugin.md)
 - Reference: [Branching conventions](./reference/branching-conventions.md)
