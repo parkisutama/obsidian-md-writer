@@ -1,5 +1,6 @@
-allowBuilds:
-  '@parcel/watcher': false
-  electron: false
-  esbuild: false
-  lefthook: false
+onlyBuiltDependencies:
+  - "@biomejs/biome"
+  - electron
+  - esbuild
+  - lefthook
+  - rumdl

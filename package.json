@@ -66,14 +66,5 @@
     "deploy": "node ./scripts/run-tsx.mjs ./scripts/deploy.ts",
     "release": "node ./scripts/run-tsx.mjs ./scripts/release.ts",
     "ci": "pnpm run build && pnpm run verify:artifacts && node ./scripts/run-tsx.mjs ./scripts/generate-ci-artefacts.ts"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@biomejs/biome",
-      "electron",
-      "esbuild",
-      "lefthook",
-      "rumdl"
-    ]
   }
 }
