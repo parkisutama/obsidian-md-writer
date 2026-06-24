@@ -23,14 +23,6 @@ export const CURRENT_LINE_HIGHLIGHT_STYLE = {
 export type CurrentLineHighlightStyle =
   (typeof CURRENT_LINE_HIGHLIGHT_STYLE)[keyof typeof CURRENT_LINE_HIGHLIGHT_STYLE];
 
-export const WRITING_FOCUS_VIGNETTE_STYLE = {
-  BOX: "box",
-  COLUMN: "column",
-} as const;
-
-export type WritingFocusVignetteStyle =
-  (typeof WRITING_FOCUS_VIGNETTE_STYLE)[keyof typeof WRITING_FOCUS_VIGNETTE_STYLE];
-
 export const ENABLED_PLATFORMS = {
   BOTH: "both",
   DESKTOP: "desktop",

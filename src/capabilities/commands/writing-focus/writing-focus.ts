@@ -16,36 +16,12 @@ export class WritingFocus {
   private readonly focusModeClass = "ptm-focus-mode";
   private readonly hiddenWorkspaceSplitClass = "ptm-writing-focus-hidden-split";
 
-  private readonly vignetteElClass = "ptm-writing-focus-vignette-element";
-  private readonly vignetteStyleAttr = "data-ptm-writing-focus-vignette-style";
-
   private leftSplitCollapsed = false;
   private rightSplitCollapsed = false;
 
   private prevWasFullscreen = false;
 
-  private addVignette(view: ItemView) {
-    const vignetteEl = this.tm.settings.writingFocus.doesWritingFocusShowHeader
-      ? view.containerEl
-      : view.contentEl;
-
-    vignetteEl.classList.add(this.vignetteElClass);
-    vignetteEl.setAttr(
-      this.vignetteStyleAttr,
-      this.tm.settings.writingFocus.writingFocusVignetteStyle
-    );
-  }
-
-  private removeVignette(view: ItemView) {
-    const vignetteEl = this.tm.settings.writingFocus.doesWritingFocusShowHeader
-      ? view.containerEl
-      : view.contentEl;
-
-    vignetteEl.removeAttribute(this.vignetteStyleAttr);
-    vignetteEl.classList.remove(this.vignetteElClass);
-  }
-
-  private startFullscreen(view: ItemView) {
+  private startFullscreen() {
     // Native electron fullscreen is not supported on mobile
     if (Platform.isMobile) {
       return;
@@ -56,7 +32,7 @@ export class WritingFocus {
     currentWindow.setFullScreen(true);
 
     const onLeaveFullScreen = () => {
-      this.onExitFullscreenWritingFocus(view);
+      this.onExitFullscreenWritingFocus();
       currentWindow.off("leave-full-screen", onLeaveFullScreen);
     };
 
@@ -78,9 +54,9 @@ export class WritingFocus {
     currentWindow.setFullScreen(false);
   }
 
-  private onExitFullscreenWritingFocus(view: ItemView) {
+  private onExitFullscreenWritingFocus() {
     if (this.focusModeActive) {
-      this.disableFocusModeForView(view);
+      this.disableFocusModeForView();
     }
   }
 
@@ -137,7 +113,7 @@ export class WritingFocus {
     );
   }
 
-  private enableFocusModeForView(view: ItemView) {
+  private enableFocusModeForView() {
     this.focusModeActive = true;
 
     if (!document.body.classList.contains(this.focusModeClass)) {
@@ -160,16 +136,12 @@ export class WritingFocus {
       this.updateWorkspaceSplitVisibility();
     }
 
-    if (this.tm.settings.writingFocus.doesWritingFocusShowVignette) {
-      this.addVignette(view);
-    }
-
     if (this.tm.settings.writingFocus.isWritingFocusFullscreen) {
-      this.startFullscreen(view);
+      this.startFullscreen();
     }
   }
 
-  private disableFocusModeForView(view: ItemView) {
+  private disableFocusModeForView() {
     this.removeExtraneousClasses();
 
     if (document.body.classList.contains(this.focusModeClass)) {
@@ -179,9 +151,6 @@ export class WritingFocus {
     this.restoreSplits();
     this.resetWorkspaceSplitVisibility();
 
-    if (this.tm.settings.writingFocus.doesWritingFocusShowVignette) {
-      this.removeVignette(view);
-    }
     if (this.tm.settings.writingFocus.isWritingFocusFullscreen) {
       this.exitFullscreen();
     }
@@ -194,7 +163,7 @@ export class WritingFocus {
     if (!view || view?.getViewType() === "empty") {
       return;
     }
-    this.enableFocusModeForView(view);
+    this.enableFocusModeForView();
   }
 
   disableFocusMode() {
@@ -202,7 +171,7 @@ export class WritingFocus {
     if (!view || view?.getViewType() === "empty") {
       return;
     }
-    this.disableFocusModeForView(view);
+    this.disableFocusModeForView();
   }
 
   toggleFocusMode() {

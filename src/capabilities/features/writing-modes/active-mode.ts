@@ -63,11 +63,6 @@ export default class WritingModeActive extends Feature {
         enabled: preset.hemingwayMode,
       },
       {
-        key: "writingFocus",
-        settingKey: "writingFocus.doesWritingFocusShowVignette",
-        enabled: preset.writingFocus,
-      },
-      {
         key: "typewriter",
         settingKey: "typewriter.isTypewriterScrollEnabled",
         enabled: preset.typewriter,

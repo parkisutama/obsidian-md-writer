@@ -8,8 +8,6 @@ import {
   type DimUnfocusedMode,
   ENABLED_PLATFORMS,
   type EnabledPlatforms,
-  WRITING_FOCUS_VIGNETTE_STYLE,
-  type WritingFocusVignetteStyle,
 } from "./constants";
 
 export interface GeneralSettings {
@@ -66,10 +64,8 @@ export interface CurrentLineSettings {
 export interface WritingFocusSettings {
   doesWritingFocusShowHeader: boolean;
   doesWritingFocusShowStatusBar: boolean;
-  doesWritingFocusShowVignette: boolean;
   isWritingFocusFullscreen: boolean;
   writingFocusFontSize: number;
-  writingFocusVignetteStyle: WritingFocusVignetteStyle;
 }
 
 export interface RestoreCursorPositionSettings {
@@ -127,7 +123,6 @@ export interface WritingModePreset {
   outliner: boolean;
   showWhitespace: boolean;
   typewriter: boolean;
-  writingFocus: boolean;
 }
 
 export interface WritingModeSettings {
@@ -238,9 +233,7 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
   writingFocus: {
     doesWritingFocusShowHeader: false,
     doesWritingFocusShowStatusBar: false,
-    doesWritingFocusShowVignette: false,
     isWritingFocusFullscreen: true,
-    writingFocusVignetteStyle: WRITING_FOCUS_VIGNETTE_STYLE.BOX,
     writingFocusFontSize: 0,
   },
   restoreCursorPosition: {
@@ -288,7 +281,6 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
       idea: {
         outliner: true,
         hemingwayMode: true,
-        writingFocus: false,
         typewriter: false,
         dimming: false,
         currentLine: false,
@@ -298,7 +290,6 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
       writing: {
         outliner: false,
         hemingwayMode: true,
-        writingFocus: false,
         typewriter: true,
         dimming: true,
         currentLine: false,
@@ -308,7 +299,6 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
       editing: {
         outliner: false,
         hemingwayMode: false,
-        writingFocus: false,
         typewriter: false,
         dimming: false,
         currentLine: true,
@@ -330,7 +320,6 @@ interface LegacyTypewriterModeSettings {
   dimUnfocusedMode: DimUnfocusedMode;
   doesWritingFocusShowHeader: boolean;
   doesWritingFocusShowStatusBar: boolean;
-  doesWritingFocusShowVignette: boolean;
   fadeLinesIntensity: number;
   hemingwayModeStatusBarText: string;
   isAllowBackspaceInHemingwayModeEnabled: boolean;
@@ -359,7 +348,6 @@ interface LegacyTypewriterModeSettings {
   typewriterOffset: number;
   version: string | null;
   writingFocusFontSize: number;
-  writingFocusVignetteStyle: WritingFocusVignetteStyle;
 }
 
 // Migration function to convert legacy flat settings to new grouped settings
@@ -469,18 +457,12 @@ function migrateWritingFocusSettings(
     doesWritingFocusShowHeader:
       legacy.doesWritingFocusShowHeader ??
       DEFAULT_SETTINGS.writingFocus.doesWritingFocusShowHeader,
-    doesWritingFocusShowVignette:
-      legacy.doesWritingFocusShowVignette ??
-      DEFAULT_SETTINGS.writingFocus.doesWritingFocusShowVignette,
     doesWritingFocusShowStatusBar:
       legacy.doesWritingFocusShowStatusBar ??
       DEFAULT_SETTINGS.writingFocus.doesWritingFocusShowStatusBar,
     isWritingFocusFullscreen:
       legacy.isWritingFocusFullscreen ??
       DEFAULT_SETTINGS.writingFocus.isWritingFocusFullscreen,
-    writingFocusVignetteStyle:
-      legacy.writingFocusVignetteStyle ??
-      DEFAULT_SETTINGS.writingFocus.writingFocusVignetteStyle,
     writingFocusFontSize:
       legacy.writingFocusFontSize ??
       DEFAULT_SETTINGS.writingFocus.writingFocusFontSize,

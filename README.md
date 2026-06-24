@@ -18,7 +18,7 @@ MD Writer is a specialized Obsidian editor environment for high-precision drafti
 
 **Line Width**: Limit the maximum number of characters per line to constrain the editor area for better readability. Separately, warn when a line exceeds a configurable character limit — useful for keeping lines short for clean Git diffs.
 
-**Writing Focus**: Distraction-free fullscreen writing mode with optional vignette overlay, custom font size, and togglable header/status bar.
+**Writing Focus**: Distraction-free fullscreen writing mode with custom font size and togglable header/status bar.
 
 **Cursor Persistence**: Automatically restores your exact cursor position when reopening files.
 

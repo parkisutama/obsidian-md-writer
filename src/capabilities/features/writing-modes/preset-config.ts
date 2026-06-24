@@ -5,7 +5,6 @@ import type { WritingMode, WritingModePreset } from "@/capabilities/settings";
 const FEATURE_LABELS: Record<keyof WritingModePreset, string> = {
   outliner: "Outliner",
   hemingwayMode: "Hemingway",
-  writingFocus: "Writing Focus",
   typewriter: "Typewriter",
   dimming: "Dimming",
   currentLine: "Current Line",
