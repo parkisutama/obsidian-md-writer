@@ -310,7 +310,7 @@ class TypewriterModeCM6Plugin {
     ) as HTMLElement;
 
     if (!currentLine) {
-      currentLine = document.createElement("div");
+      currentLine = editorDom.ownerDocument.createElement("div");
       currentLine.className = currentLineClass;
       editorDom.appendChild(currentLine);
     }
@@ -324,13 +324,13 @@ class TypewriterModeCM6Plugin {
       ) as HTMLElement;
 
       if (!fadeBefore) {
-        fadeBefore = document.createElement("div");
+        fadeBefore = editorDom.ownerDocument.createElement("div");
         fadeBefore.className = fadeBeforeClass;
         editorDom.appendChild(fadeBefore);
       }
 
       if (!fadeAfter) {
-        fadeAfter = document.createElement("div");
+        fadeAfter = editorDom.ownerDocument.createElement("div");
         fadeAfter.className = fadeAfterClass;
         editorDom.appendChild(fadeAfter);
       }

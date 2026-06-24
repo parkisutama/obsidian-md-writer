@@ -85,13 +85,13 @@ export default class HemingwayMode extends FeatureToggle {
   };
 
   private registerKeyboardHandler() {
-    document.addEventListener("keydown", this.keyboardHandler, {
+    window.activeDocument.addEventListener("keydown", this.keyboardHandler, {
       capture: true,
     });
   }
 
   private unregisterKeyboardHandler() {
-    document.removeEventListener("keydown", this.keyboardHandler, {
+    window.activeDocument.removeEventListener("keydown", this.keyboardHandler, {
       capture: true,
     });
   }

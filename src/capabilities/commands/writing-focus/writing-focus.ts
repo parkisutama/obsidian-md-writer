@@ -21,6 +21,10 @@ export class WritingFocus {
 
   private prevWasFullscreen = false;
 
+  private getActiveDocument(): Document {
+    return window.activeDocument;
+  }
+
   private startFullscreen() {
     // Native electron fullscreen is not supported on mobile
     if (Platform.isMobile) {
@@ -81,20 +85,26 @@ export class WritingFocus {
   }
 
   private removeExtraneousClasses() {
+    const activeDocument = this.getActiveDocument();
+
     if (
       this.tm.plugin.app.workspace.containerEl.hasClass(this.maximizedClass)
     ) {
       this.tm.plugin.app.workspace.containerEl.removeClass(this.maximizedClass);
     }
-    if (document.body.classList.contains(this.focusModeClass)) {
-      document.body.classList.remove(this.focusModeClass);
+    if (activeDocument.body.classList.contains(this.focusModeClass)) {
+      activeDocument.body.classList.remove(this.focusModeClass);
     }
     this.resetWorkspaceSplitVisibility();
   }
 
   private updateWorkspaceSplitVisibility() {
+    const activeDocument = this.getActiveDocument();
+
     Array.from(
-      document.querySelectorAll(`.${this.focusModeClass} .workspace-split`)
+      activeDocument.querySelectorAll(
+        `.${this.focusModeClass} .workspace-split`
+      )
     ).forEach((node) => {
       const workspaceSplit = node as HTMLElement;
       const hasActiveKids = workspaceSplit.querySelector(".mod-active");
@@ -106,7 +116,9 @@ export class WritingFocus {
   }
 
   private resetWorkspaceSplitVisibility() {
-    Array.from(document.querySelectorAll(".workspace-split")).forEach(
+    const activeDocument = this.getActiveDocument();
+
+    Array.from(activeDocument.querySelectorAll(".workspace-split")).forEach(
       (node) => {
         node.classList.remove(this.hiddenWorkspaceSplitClass);
       }
@@ -115,8 +127,9 @@ export class WritingFocus {
 
   private enableFocusModeForView() {
     this.focusModeActive = true;
+    const activeDocument = this.getActiveDocument();
 
-    if (!document.body.classList.contains(this.focusModeClass)) {
+    if (!activeDocument.body.classList.contains(this.focusModeClass)) {
       this.storeSplitsValues();
     }
 
@@ -127,12 +140,12 @@ export class WritingFocus {
       !this.tm.plugin.app.workspace.containerEl.hasClass(this.maximizedClass)
     );
 
-    document.body.classList.toggle(
+    activeDocument.body.classList.toggle(
       this.focusModeClass,
-      !document.body.classList.contains(this.focusModeClass)
+      !activeDocument.body.classList.contains(this.focusModeClass)
     );
 
-    if (document.body.classList.contains(this.focusModeClass)) {
+    if (activeDocument.body.classList.contains(this.focusModeClass)) {
       this.updateWorkspaceSplitVisibility();
     }
 
@@ -142,10 +155,12 @@ export class WritingFocus {
   }
 
   private disableFocusModeForView() {
+    const activeDocument = this.getActiveDocument();
+
     this.removeExtraneousClasses();
 
-    if (document.body.classList.contains(this.focusModeClass)) {
-      document.body.classList.remove(this.focusModeClass);
+    if (activeDocument.body.classList.contains(this.focusModeClass)) {
+      activeDocument.body.classList.remove(this.focusModeClass);
     }
 
     this.restoreSplits();
