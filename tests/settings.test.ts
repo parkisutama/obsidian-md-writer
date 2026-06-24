@@ -23,6 +23,12 @@ describe("settings defaults and migrations", () => {
     expect(
       getSettingByPath(settings, "typewriter.isTypewriterScrollEnabled")
     ).toBe(true);
+    expect(
+      getSettingByPath(
+        settings,
+        "compatibility.isGFMAnchorCompatibilityEnabled"
+      )
+    ).toBe(true);
 
     setSettingByPath(settings, "typewriter.typewriterOffset", 0.42);
 
@@ -51,6 +57,7 @@ describe("settings defaults and migrations", () => {
       "Draft.md": { ch: 4, line: 2 },
     });
     expect(migrated.showWhitespace).toEqual(DEFAULT_SETTINGS.showWhitespace);
+    expect(migrated.compatibility).toEqual(DEFAULT_SETTINGS.compatibility);
   });
 
   it("deep-merges modern settings with newly introduced defaults", async () => {
@@ -73,6 +80,7 @@ describe("settings defaults and migrations", () => {
     expect(migrated.typewriter.typewriterOffset).toBe(0.25);
     expect(migrated.outliner).toEqual(DEFAULT_SETTINGS.outliner);
     expect(migrated.blockId).toEqual(DEFAULT_SETTINGS.blockId);
+    expect(migrated.compatibility).toEqual(DEFAULT_SETTINGS.compatibility);
   });
 
   it("deep-merges writing mode presets with newly introduced defaults", async () => {

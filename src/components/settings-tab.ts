@@ -64,6 +64,20 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
         },
       },
       {
+        id: "compatibility",
+        label: "Compatibility",
+        description:
+          "Markdown compatibility behavior for links and publishing-oriented notes.",
+        render: (container) => {
+          this.addTabDescription(
+            container,
+            "Markdown compatibility behavior for links and publishing-oriented notes."
+          );
+          const group = new SettingGroup(container);
+          this.registerFeaturesInGroup(group, this.tm.features.compatibility);
+        },
+      },
+      {
         id: "writingFocus",
         label: "Writing focus",
         description:

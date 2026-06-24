@@ -23,6 +23,10 @@ import { createShowWhitespaceExtension } from "@/cm6/show-whitespace";
 import { createWarnLongLineExtension } from "@/cm6/warn-long-line";
 import { OUTLINE_VIEW_TYPE, OutlineView } from "@/components/outline-view";
 import TypewriterModeSettingTab from "@/components/settings-tab";
+import {
+  createGFMAnchorLivePreviewExtension,
+  registerGFMAnchorCompatibility,
+} from "@/gfm-anchor";
 import type { AbstractCommand } from "./capabilities/base/abstract-command";
 import type { Feature } from "./capabilities/base/feature";
 import { getCommands } from "./capabilities/commands";
@@ -76,6 +80,9 @@ export default class TypewriterModeLib {
         this.outlinerFocusAtPosition(view, pos)
       ),
       createWarnLongLineExtension(this),
+      createGFMAnchorLivePreviewExtension(this.plugin, () =>
+        this.isGFMAnchorCompatibilityEnabled()
+      ),
     ];
   }
 
@@ -84,8 +91,15 @@ export default class TypewriterModeLib {
     await this.saveSettings(); // if default settings were loaded
 
     this.registerOutlineView();
+    registerGFMAnchorCompatibility(this.plugin, () =>
+      this.isGFMAnchorCompatibilityEnabled()
+    );
     this.loadPerWindowProps();
     this.loadEditorExtension();
+  }
+
+  private isGFMAnchorCompatibilityEnabled(): boolean {
+    return this.settings.compatibility.isGFMAnchorCompatibilityEnabled;
   }
 
   private registerOutlineView() {

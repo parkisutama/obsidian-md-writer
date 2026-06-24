@@ -113,6 +113,10 @@ export interface FoldPersistSettings {
   isFoldPersistEnabled: boolean;
 }
 
+export interface CompatibilitySettings {
+  isGFMAnchorCompatibilityEnabled: boolean;
+}
+
 export type WritingMode = "idea" | "writing" | "editing" | "normal" | "none";
 
 export interface WritingModePreset {
@@ -133,6 +137,7 @@ export interface WritingModeSettings {
 
 export interface TypewriterModeSettings {
   blockId: BlockIdSettings;
+  compatibility: CompatibilitySettings;
   currentLine: CurrentLineSettings;
   dimming: DimmingSettings;
   foldPersist: FoldPersistSettings;
@@ -275,6 +280,9 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
   foldPersist: {
     isFoldPersistEnabled: false,
     foldState: {},
+  },
+  compatibility: {
+    isGFMAnchorCompatibilityEnabled: true,
   },
   writingMode: {
     activeMode: "none",
@@ -539,6 +547,7 @@ function migrateSettings(
     outliner: { ...DEFAULT_SETTINGS.outliner },
     blockId: { ...DEFAULT_SETTINGS.blockId },
     foldPersist: { ...DEFAULT_SETTINGS.foldPersist },
+    compatibility: { ...DEFAULT_SETTINGS.compatibility },
     writingMode: { ...DEFAULT_SETTINGS.writingMode },
   };
 }

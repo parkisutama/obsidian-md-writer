@@ -1,6 +1,7 @@
 import type TypewriterModeLib from "@/lib";
 import type { Feature } from "../base/feature";
 import blockId from "./block-id";
+import compatibility from "./compatibility";
 import currentLine from "./current-line";
 import dimming from "./dimming";
 import foldPersist from "./fold-persist";
@@ -22,6 +23,7 @@ export function getFeatures(
     general: general(tm),
     writingFocus: writingFocus(tm),
     outliner: outliner(tm),
+    compatibility: compatibility(tm),
     blockId: blockId(tm),
     foldPersist: foldPersist(tm),
     hemingwayMode: hemingwayMode(tm),

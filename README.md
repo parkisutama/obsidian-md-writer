@@ -22,6 +22,34 @@ MD Writer is a specialized Obsidian editor environment for high-precision drafti
 
 **Cursor Persistence**: Automatically restores your exact cursor position when reopening files.
 
+**GitHub-style Heading Anchors**: Navigate GitHub-style heading links in Reading Mode and Live Preview, including duplicate headings and Unicode text, without modifying your Markdown files.
+
+## GitHub-Style Anchor Compatibility
+
+MD Writer can resolve GitHub-style heading anchors such as `#instalasi--setup` to the matching Obsidian heading. This is useful when drafting notes that are also published to GitHub or copied from GitHub-flavored Markdown.
+
+Example note:
+
+```markdown
+# Dokumentasi Proyek
+
+## Instalasi & Setup
+
+## Fitur Utama
+
+## Fitur Utama
+
+## Café dan Niño
+
+- [Instalasi & Setup](#instalasi--setup)
+- [Fitur Utama](#fitur-utama)
+- [Fitur Utama kedua](#fitur-utama-1)
+- [Café dan Niño](#café-dan-niño)
+- [Setup di file lain](panduan.md#instalasi--setup)
+```
+
+The compatibility layer only rewrites link handling at runtime for navigation and hover preview. It does not edit vault files.
+
 ## Installation
 
 ### Manual installation
