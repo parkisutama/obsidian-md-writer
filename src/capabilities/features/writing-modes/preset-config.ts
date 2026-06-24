@@ -5,6 +5,7 @@ import type { WritingMode, WritingModePreset } from "@/capabilities/settings";
 const FEATURE_LABELS: Record<keyof WritingModePreset, string> = {
   outliner: "Outliner",
   hemingwayMode: "Hemingway",
+  writingFocus: "Writing Focus",
   typewriter: "Typewriter",
   dimming: "Dimming",
   currentLine: "Current Line",
@@ -18,6 +19,8 @@ const MODE_DESCRIPTIONS: Record<Exclude<WritingMode, "none">, string> = {
     "Draft and compose. Typewriter scroll + Dimming for focused writing flow.",
   editing:
     "Revise and polish. Current Line + Whitespace + Line Width for precision editing.",
+  normal:
+    "Return to a casual Obsidian experience by disabling managed MD Writer feature effects.",
 };
 
 export default class WritingModePresetConfig extends Feature {
@@ -29,14 +32,16 @@ export default class WritingModePresetConfig extends Feature {
   }
 
   registerSetting(settingGroup: SettingGroup): void {
-    for (const mode of ["idea", "writing", "editing"] as const) {
+    for (const mode of ["idea", "writing", "editing", "normal"] as const) {
       const preset = this.tm.settings.writingMode.presets[mode];
       const description = MODE_DESCRIPTIONS[mode];
 
       settingGroup.addSetting((setting) =>
         setting
           .setName(`${mode.charAt(0).toUpperCase()}${mode.slice(1)} mode`)
-          .setDesc(description)
+          .setDesc(
+            `${description} These switches edit the preset recipe; they do not toggle live features until this mode is activated.`
+          )
           .setHeading()
       );
 

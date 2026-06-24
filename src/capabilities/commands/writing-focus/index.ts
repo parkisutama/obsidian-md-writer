@@ -11,6 +11,15 @@ export class WritingFocusCommand extends ToggleCommand {
 
   private readonly writingFocus = new WritingFocus(this.tm);
 
+  setWritingFocusEnabled(isEnabled: boolean): void {
+    if (isEnabled) {
+      this.writingFocus.enableFocusMode();
+      return;
+    }
+
+    this.writingFocus.disableFocusMode();
+  }
+
   protected override onCommand(): void {
     this.writingFocus.toggleFocusMode();
   }

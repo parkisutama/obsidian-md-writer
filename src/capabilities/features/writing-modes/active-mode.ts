@@ -2,6 +2,48 @@ import type { SettingGroup } from "obsidian";
 import { Feature } from "@/capabilities/base/feature";
 import type { WritingMode, WritingModePreset } from "@/capabilities/settings";
 
+const MANAGED_FEATURES: Array<{
+  settingKey: string;
+  presetKey: keyof WritingModePreset;
+  featureGroup: string;
+}> = [
+  {
+    presetKey: "outliner",
+    featureGroup: "outliner",
+    settingKey: "outliner.isOutlinerEnabled",
+  },
+  {
+    presetKey: "hemingwayMode",
+    featureGroup: "hemingwayMode",
+    settingKey: "hemingwayMode.isHemingwayModeEnabled",
+  },
+  {
+    presetKey: "typewriter",
+    featureGroup: "typewriter",
+    settingKey: "typewriter.isTypewriterScrollEnabled",
+  },
+  {
+    presetKey: "dimming",
+    featureGroup: "dimming",
+    settingKey: "dimming.isDimUnfocusedEnabled",
+  },
+  {
+    presetKey: "currentLine",
+    featureGroup: "currentLine",
+    settingKey: "currentLine.isHighlightCurrentLineEnabled",
+  },
+  {
+    presetKey: "showWhitespace",
+    featureGroup: "showWhitespace",
+    settingKey: "showWhitespace.isShowWhitespaceEnabled",
+  },
+  {
+    presetKey: "maxChars",
+    featureGroup: "maxChar",
+    settingKey: "maxChars.isMaxCharsPerLineEnabled",
+  },
+];
+
 export default class WritingModeActive extends Feature {
   readonly settingKey = "writingMode.activeMode" as const;
 
@@ -12,7 +54,7 @@ export default class WritingModeActive extends Feature {
       setting
         .setName("Active writing mode")
         .setDesc(
-          "Select a writing mode to activate its feature preset. Choose none to manage features manually."
+          "Activate a saved preset recipe. Choose normal to disable managed plugin features, or none to manage features manually without undoing current states."
         )
         .setClass("md-writer-setting")
         .addDropdown((dropdown) => {
@@ -21,9 +63,9 @@ export default class WritingModeActive extends Feature {
             .addOption("idea", "Idea")
             .addOption("writing", "Writing")
             .addOption("editing", "Editing")
+            .addOption("normal", "Normal")
             .setValue(currentMode)
             .onChange((newValue) => {
-              this.setSettingValue(newValue as WritingMode);
               this.applyMode(newValue as WritingMode);
               this.tm.saveSettings().catch((error) => {
                 console.error("Failed to save settings:", error);
@@ -38,6 +80,8 @@ export default class WritingModeActive extends Feature {
   }
 
   applyMode(mode: WritingMode) {
+    this.setSettingValue(mode);
+
     if (mode === "none") {
       return;
     }
@@ -47,58 +91,34 @@ export default class WritingModeActive extends Feature {
   }
 
   applyPreset(preset: WritingModePreset) {
-    const featureMap: Array<{
-      key: string;
-      settingKey: string;
-      enabled: boolean;
-    }> = [
-      {
-        key: "outliner",
-        settingKey: "outliner.isOutlinerEnabled",
-        enabled: preset.outliner,
-      },
-      {
-        key: "hemingwayMode",
-        settingKey: "hemingwayMode.isHemingwayModeEnabled",
-        enabled: preset.hemingwayMode,
-      },
-      {
-        key: "typewriter",
-        settingKey: "typewriter.isTypewriterScrollEnabled",
-        enabled: preset.typewriter,
-      },
-      {
-        key: "dimming",
-        settingKey: "dimming.isDimUnfocusedEnabled",
-        enabled: preset.dimming,
-      },
-      {
-        key: "currentLine",
-        settingKey: "currentLine.isHighlightCurrentLineEnabled",
-        enabled: preset.currentLine,
-      },
-      {
-        key: "showWhitespace",
-        settingKey: "showWhitespace.isShowWhitespaceEnabled",
-        enabled: preset.showWhitespace,
-      },
-      {
-        key: "maxChar",
-        settingKey: "maxChars.isMaxCharsPerLineEnabled",
-        enabled: preset.maxChars,
-      },
-    ];
-
-    for (const entry of featureMap) {
-      const category = this.tm.features[entry.key];
+    for (const entry of MANAGED_FEATURES) {
+      const category = this.tm.features[entry.featureGroup];
       if (!category) {
         continue;
       }
 
       const feature = category[entry.settingKey];
       if (feature && "toggle" in feature) {
-        (feature as { toggle: (value: boolean) => void }).toggle(entry.enabled);
+        (feature as { toggle: (value: boolean) => void }).toggle(
+          preset[entry.presetKey]
+        );
       }
+    }
+
+    const writingFocusCommand = this.tm.commands?.["writing-focus"];
+    if (
+      writingFocusCommand &&
+      typeof (
+        writingFocusCommand as unknown as {
+          setWritingFocusEnabled?: (isEnabled: boolean) => void;
+        }
+      ).setWritingFocusEnabled === "function"
+    ) {
+      (
+        writingFocusCommand as unknown as {
+          setWritingFocusEnabled: (isEnabled: boolean) => void;
+        }
+      ).setWritingFocusEnabled(preset.writingFocus);
     }
   }
 }

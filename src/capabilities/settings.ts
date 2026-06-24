@@ -113,7 +113,7 @@ export interface FoldPersistSettings {
   isFoldPersistEnabled: boolean;
 }
 
-export type WritingMode = "idea" | "writing" | "editing" | "none";
+export type WritingMode = "idea" | "writing" | "editing" | "normal" | "none";
 
 export interface WritingModePreset {
   currentLine: boolean;
@@ -123,6 +123,7 @@ export interface WritingModePreset {
   outliner: boolean;
   showWhitespace: boolean;
   typewriter: boolean;
+  writingFocus: boolean;
 }
 
 export interface WritingModeSettings {
@@ -281,6 +282,7 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
       idea: {
         outliner: true,
         hemingwayMode: true,
+        writingFocus: true,
         typewriter: false,
         dimming: false,
         currentLine: false,
@@ -290,6 +292,7 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
       writing: {
         outliner: false,
         hemingwayMode: true,
+        writingFocus: true,
         typewriter: true,
         dimming: true,
         currentLine: false,
@@ -299,11 +302,22 @@ export const DEFAULT_SETTINGS: TypewriterModeSettings = {
       editing: {
         outliner: false,
         hemingwayMode: false,
+        writingFocus: false,
         typewriter: false,
         dimming: false,
         currentLine: true,
         showWhitespace: true,
         maxChars: true,
+      },
+      normal: {
+        outliner: false,
+        hemingwayMode: false,
+        writingFocus: false,
+        typewriter: false,
+        dimming: false,
+        currentLine: false,
+        showWhitespace: false,
+        maxChars: false,
       },
     },
   },
@@ -529,6 +543,33 @@ function migrateSettings(
   };
 }
 
+function mergeWritingModeSettings(
+  settings: Partial<WritingModeSettings> | undefined
+): WritingModeSettings {
+  return {
+    ...DEFAULT_SETTINGS.writingMode,
+    ...settings,
+    presets: {
+      idea: {
+        ...DEFAULT_SETTINGS.writingMode.presets.idea,
+        ...settings?.presets?.idea,
+      },
+      writing: {
+        ...DEFAULT_SETTINGS.writingMode.presets.writing,
+        ...settings?.presets?.writing,
+      },
+      editing: {
+        ...DEFAULT_SETTINGS.writingMode.presets.editing,
+        ...settings?.presets?.editing,
+      },
+      normal: {
+        ...DEFAULT_SETTINGS.writingMode.presets.normal,
+        ...settings?.presets?.normal,
+      },
+    },
+  };
+}
+
 // Migration function to copy cursor positions from old file to settings
 // Only needed when coming from pre-v1.2.0 (legacy flat format)
 async function migrateCursorPositions(
@@ -599,6 +640,11 @@ export async function applyStartupMigrations(
     keyof TypewriterModeSettings
   >) {
     if (settings[key] !== undefined) {
+      if (key === "writingMode") {
+        merged.writingMode = mergeWritingModeSettings(settings.writingMode);
+        continue;
+      }
+
       // @ts-expect-error — merging category objects
       merged[key] = { ...DEFAULT_SETTINGS[key], ...settings[key] };
     }
