@@ -1,0 +1,48 @@
+---
+layout: home
+
+hero:
+  name: MD Writer
+  text: Documentation
+  tagline: High-precision drafting for Obsidian with typewriter scrolling, whitespace visualization, and outliner focus.
+  actions:
+    - theme: brand
+      text: Install the plugin
+      link: /for-users/install-md-writer
+    - theme: alt
+      text: Contribute
+      link: /for-developers/setup-local-development
+
+features:
+  - title: For plugin users
+    details: Install MD Writer, learn the main writing features, and troubleshoot common Obsidian setup issues.
+  - title: For developers
+    details: Set up local development, run QA, follow branch conventions, and prepare releases.
+  - title: Reference
+    details: Keep stable release gates, branching rules, audit prompts, and long-form implementation plans in one place.
+---
+
+# MD Writer documentation
+
+## Start here
+
+Choose the path that matches what you want to do.
+
+### Pengguna plugin
+
+- [Install MD Writer](./for-users/install-md-writer.md)
+- [Use MD Writer features](./for-users/use-md-writer-features.md)
+- [Troubleshoot MD Writer](./for-users/troubleshooting.md)
+
+### Developer dan maintainer
+
+- [Set up local development](./for-developers/setup-local-development.md)
+- [Start a feature or bugfix](./for-developers/start-a-feature-or-bugfix.md)
+- [Run QA before merge or release](./for-developers/run-qa-before-merge-or-release.md)
+- [Create a GitHub release for BRAT and Obsidian](./for-developers/create-a-github-release.md)
+
+### Reference
+
+- [Branching conventions](./reference/branching-conventions.md)
+- [Release gates](./reference/release-gates.md)
+- [Outliner integration URD, PRD, and implementation plan](./reference/outliner-urd-prd.md)

@@ -32,6 +32,7 @@
     "tsx": "^4.19.0",
     "typescript": "^5.9.3",
     "ultracite": "7.2.3",
+    "vitepress": "^1.6.4",
     "vitest": "^4.1.6"
   },
   "description": "High-precision drafting for Obsidian with typewriter scrolling, whitespace visualization, and outliner focus",
@@ -52,6 +53,9 @@
     "fix:biome": "biome check --write src scripts tests",
     "fix:styles": "stylelint --fix \"src/**/*.scss\"",
     "fix:md": "node ./scripts/lint-md.mjs check --fix .",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
     "typecheck": "pnpm run typecheck:fast",
     "typecheck:fast": "tsc --noEmit --incremental false",
     "typecheck:ci": "tsc --noEmit --incremental false",

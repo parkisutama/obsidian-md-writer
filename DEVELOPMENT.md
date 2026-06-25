@@ -5,12 +5,15 @@
 ## Prerequisites
 
 1. Install [Node.js](https://nodejs.org/) (v22+)
-2. Install [pnpm](https://pnpm.io/): `npm install -g pnpm`
+2. Enable [pnpm](https://pnpm.io/) through Corepack:
+   `corepack enable`
 
 ## Setup
 
 1. Fork this repo and clone your fork
 2. Install dependencies with `pnpm install`
+
+For detailed workflow notes, see [MD Writer docs](./docs/README.md).
 
 ## Building and Testing
 
@@ -33,13 +36,30 @@
 | --------- | ------------- |
 | `pnpm run check` | Run all checks (typecheck + lint + stylelint + markdownlint) |
 | `pnpm run typecheck` | TypeScript type check |
-| `pnpm run lint` | Biome lint & format (auto-fix) |
-| `pnpm run lint:styles` | SCSS linting (auto-fix) |
-| `pnpm run lint:md` | Markdown linting (auto-fix) |
+| `pnpm run lint` | Biome lint and format checks |
+| `pnpm run lint:styles` | SCSS linting |
+| `pnpm run lint:md` | Markdown linting |
+| `pnpm run fix` | Apply available Biome, Stylelint, and Markdown fixes |
 
-A pre-commit hook via [Lefthook](https://github.com/evilmartians/lefthook) runs `pnpm run check` automatically.
+A pre-commit hook via [Lefthook](https://github.com/evilmartians/lefthook) runs `pnpm run fix` and `pnpm run check` automatically.
+
+## Documentation Site
+
+| Command | Description |
+| --------- | ------------- |
+| `pnpm run docs:dev` | Start the VitePress docs site locally |
+| `pnpm run docs:build` | Build the static docs site for GitHub Pages |
+| `pnpm run docs:preview` | Preview the built docs site locally |
+
+GitHub Pages deployment is handled by the `Deploy documentation` workflow.
 
 ## Releasing
 
-- `pnpm run release` — Run all checks, then create a release (tag + GitHub release)
-- `pnpm run ci` — CI build (used in GitHub Actions)
+- `pnpm run release` — Run release validation, create the local release commit,
+  and create the local semver tag
+- `git push --follow-tags` — Push the release commit and tag; the tag triggers
+  the GitHub release workflow
+- `pnpm run ci` — CI build used by GitHub Actions
+
+Longer release procedures live in
+[Create a GitHub release for BRAT and Obsidian](./docs/for-developers/create-a-github-release.md).
