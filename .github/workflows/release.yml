@@ -10,6 +10,7 @@ on:
       - "*.*.*"
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   PLUGIN_NAME: md-writer
 
 jobs:
@@ -25,7 +26,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Validate release tag and metadata
         run: node ./scripts/validate-release-tag.mjs "${{ github.ref_name }}"
@@ -43,7 +44,7 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
 
       - name: Build
