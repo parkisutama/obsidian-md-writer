@@ -1,0 +1,87 @@
+# Set up local development
+
+Dokumen ini untuk developer yang ingin menjalankan MD Writer secara lokal.
+
+## Prerequisites
+
+1. Install Node.js v22 atau lebih baru.
+2. Enable pnpm melalui Corepack:
+
+   ```bash
+   corepack enable
+   ```
+
+3. Clone repository.
+4. Install dependencies:
+
+   ```bash
+   pnpm install
+   ```
+
+## Development loop
+
+Gunakan perintah ini saat mengembangkan plugin:
+
+```bash
+pnpm run dev
+```
+
+Perintah ini build plugin, menyiapkan `test-vault`, dan mencoba deploy ke vault
+Obsidian lokal jika konfigurasi deploy tersedia.
+
+## Build tanpa deploy
+
+```bash
+pnpm run build
+```
+
+Artefak build dibuat di `dist/`:
+
+- `dist/main.js`
+- `dist/manifest.json`
+- `dist/styles.css`
+
+## Debug build
+
+```bash
+pnpm run debug
+```
+
+Gunakan ini saat perlu mempertahankan `console.debug` untuk investigasi lokal.
+Build normal menghapus debug statements.
+
+## QA lokal
+
+Jalankan gate penuh sebelum merge atau release:
+
+```bash
+pnpm run check:ci
+```
+
+Untuk memperbaiki format yang bisa diautofix:
+
+```bash
+pnpm run fix
+```
+
+## Documentation site
+
+Jalankan VitePress secara lokal:
+
+```bash
+pnpm run docs:dev
+```
+
+Build site sebelum mengubah workflow GitHub Pages:
+
+```bash
+pnpm run docs:build
+```
+
+GitHub Pages memakai output dari `docs/.vitepress/dist`, tetapi folder build
+itu tidak perlu di-commit.
+
+## Next steps
+
+- Mulai pekerjaan baru: [Start a feature or bugfix](./start-a-feature-or-bugfix.md)
+- Jalankan QA: [Run QA before merge or release](./run-qa-before-merge-or-release.md)

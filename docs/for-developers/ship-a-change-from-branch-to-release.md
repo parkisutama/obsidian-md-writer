@@ -151,4 +151,4 @@ Alur dasarnya adalah:
 6. push tag,
 7. biarkan GitHub Actions membuat release.
 
-Untuk detail keputusan di balik workflow ini, lanjutkan ke [SDLC for this plugin](../explanation/sdlc-for-this-plugin.md).
+Untuk detail keputusan di balik workflow ini, lanjutkan ke [SDLC for this plugin](./sdlc-for-this-plugin.md).

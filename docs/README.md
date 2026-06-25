@@ -1,31 +1,60 @@
-# MD Writer docs
+# MD Writer documentation
 
-Dokumentasi ini memakai kerangka **Diataxis** agar isi repo bisa tumbuh dengan struktur yang jelas:
+Dokumentasi ini diatur berdasarkan aksi yang paling mungkin dilakukan oleh dua
+persona utama:
 
-- `tutorials/`: panduan belajar langkah demi langkah.
-- `how-to/`: prosedur praktis untuk menyelesaikan tugas tertentu.
-- `explanation/`: penjelasan kenapa workflow dan keputusan tertentu dipakai.
-- `reference/`: aturan, checklist, dan fakta yang perlu dirujuk cepat.
+- pengguna plugin yang ingin memasang, memakai, dan memperbaiki masalah MD
+  Writer di Obsidian,
+- developer atau maintainer yang ingin berkontribusi, menjalankan QA, dan
+  merilis perubahan.
 
-## Mulai dari sini
+## Pengguna plugin
 
-- Tutorial: [Ship a change from branch to GitHub release](./tutorials/ship-a-change-from-branch-to-release.md)
-- How-to: [Start a feature or bugfix](./how-to/start-a-feature-or-bugfix.md)
-- How-to: [Run QA before merge or release](./how-to/run-qa-before-merge-or-release.md)
-- How-to: [Commit, push, and release a change](./how-to/commit-push-and-release.md)
-- How-to: [Create a GitHub release for BRAT and Obsidian](./how-to/create-a-github-release.md)
-- Explanation: [SDLC for this plugin](./explanation/sdlc-for-this-plugin.md)
-- Reference: [Branching conventions](./reference/branching-conventions.md)
-- Reference: [Release gates](./reference/release-gates.md)
+Mulai dari sini jika tujuan Anda adalah memakai MD Writer di vault Obsidian:
 
-## Ruang lingkup saat ini
+- [Install MD Writer](./for-users/install-md-writer.md)
+- [Use MD Writer features](./for-users/use-md-writer-features.md)
+- [Troubleshoot MD Writer](./for-users/troubleshooting.md)
 
-Langkah awal dokumentasi ini berfokus pada SDLC inti:
+Informasi singkat untuk pengguna juga tersedia di
+[README utama](https://github.com/parkisutama/obsidian-md-writer/blob/main/README.md).
 
-- penambahan feature,
-- perbaikan bug,
-- QA lokal,
-- validasi CI,
-- dan release plugin lewat GitHub Actions serta GitHub Releases.
+## Developer dan maintainer
 
-Dokumentasi arsitektur codebase bisa ditambahkan setelah fondasi SDLC ini stabil.
+Mulai dari sini jika tujuan Anda adalah mengubah kode, dokumentasi, atau release:
+
+- [Set up local development](./for-developers/setup-local-development.md)
+- [Start a feature or bugfix](./for-developers/start-a-feature-or-bugfix.md)
+- [Run QA before merge or release](./for-developers/run-qa-before-merge-or-release.md)
+- [Commit, push, and release a change](./for-developers/commit-push-and-release.md)
+- [Create a GitHub release for BRAT and Obsidian](./for-developers/create-a-github-release.md)
+- [Ship a change from branch to GitHub release](./for-developers/ship-a-change-from-branch-to-release.md)
+- [Documentation guidelines](./for-developers/documentation-guidelines.md)
+- [SDLC for this plugin](./for-developers/sdlc-for-this-plugin.md)
+
+Quickstart contributor tetap ada di
+[DEVELOPMENT.md](https://github.com/parkisutama/obsidian-md-writer/blob/main/DEVELOPMENT.md).
+
+## Reference
+
+Gunakan bagian ini untuk aturan stabil, checklist, dan spesifikasi panjang:
+
+- [Branching conventions](./reference/branching-conventions.md)
+- [Release gates](./reference/release-gates.md)
+- [Outliner integration URD, PRD, and implementation plan](./reference/outliner-urd-prd.md)
+- [Obsidian plugin audit prompts](./reference/obsidian-plugin-audit-prompts.md)
+
+## Archive
+
+Dokumen di archive disimpan untuk riwayat proyek. Jangan jadikan sumber utama
+kecuali dokumen aktif menautkannya sebagai konteks.
+
+- [Active document warning cleanup release plan](./archive/release-plan-active-document-warnings.md)
+- [Obsidian plugin audit report, 2026-05-14](./archive/obsidian-plugin-audit-report-2026-05-14.md)
+
+## Folder map
+
+- `for-users/`: aktivitas pengguna plugin.
+- `for-developers/`: aktivitas contributor dan maintainer.
+- `reference/`: aturan, checklist, audit prompt, dan spesifikasi.
+- `archive/`: catatan historis.

@@ -87,6 +87,11 @@ The hemingway mode feature was derived from [Obsidian Hemingway Mode](https://gi
 
 Many thanks to the developers of these fantastic plugins. Please also consider supporting them.
 
+## Development and project docs
+
+Contributor setup lives in [DEVELOPMENT.md](./DEVELOPMENT.md). Project workflow,
+release, and planning notes live in [docs/](./docs/README.md).
+
 ## Privacy and network use
 
 MD Writer stores its settings and cursor-position history in the plugin data file managed by Obsidian.
