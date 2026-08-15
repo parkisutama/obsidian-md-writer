@@ -1,6 +1,7 @@
-onlyBuiltDependencies:
-  - "@biomejs/biome"
-  - electron
-  - esbuild
-  - lefthook
-  - rumdl
+allowBuilds:
+  "@biomejs/biome": true
+  "@parcel/watcher": true
+  electron: true
+  esbuild: true
+  lefthook: true
+  rumdl: true
