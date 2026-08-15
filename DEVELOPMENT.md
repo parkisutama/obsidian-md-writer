@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-1. Install [Node.js](https://nodejs.org/) (v22+)
+1. Install [Node.js](https://nodejs.org/) 24.x (see `.node-version`)
 2. Enable [pnpm](https://pnpm.io/) through Corepack:
    `corepack enable`
 

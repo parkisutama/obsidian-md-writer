@@ -4,7 +4,7 @@ Dokumen ini untuk developer yang ingin menjalankan MD Writer secara lokal.
 
 ## Prerequisites
 
-1. Install Node.js v22 atau lebih baru.
+1. Install Node.js v24.x (lihat `.node-version`).
 2. Enable pnpm melalui Corepack:
 
    ```bash
