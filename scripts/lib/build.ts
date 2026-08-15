@@ -48,12 +48,17 @@ export async function build({
     entryPoints: [`${rootDir}/${srcDir}/${main}`],
     outdir: `${rootDir}/${outDir}`,
     bundle: true,
-    minify,
+    minifyWhitespace: minify,
+    minifyIdentifiers: minify,
+    minifySyntax: minify || stripDebug,
     sourcemap: minify ? false : "inline",
     target: "es2022",
     platform: "browser",
     format: esbuildFormat,
-    drop: stripDebug ? ["console"] : [],
+    // `drop: ["console"]` removes every console.* call; `pure` + minifySyntax
+    // only eliminates the specific debug/log calls listed here, so
+    // console.error/console.warn survive into the production bundle.
+    pure: stripDebug ? ["console.log", "console.debug"] : [],
     external: [
       "obsidian",
       "electron",
