@@ -47,6 +47,7 @@ export async function build({
     outdir: `${rootDir}/${outDir}`,
     bundle: true,
     minify: true,
+    target: "es2022",
     platform: "browser",
     format: esbuildFormat,
     drop: stripDebug ? ["console"] : [],
