@@ -46,13 +46,13 @@ importers:
         version: 10.8.1(supports-color@10.2.2)
       eslint-plugin-obsidianmd:
         specifier: ^0.4.1
-        version: 0.4.1(@eslint/js@9.39.5)(@eslint/json@0.14.0)(@typescript-eslint/parser@8.67.0(eslint@10.8.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.8.1(supports-color@10.2.2))(obsidian@1.12.3(@codemirror/state@6.5.0)(@codemirror/view@6.38.6))(supports-color@10.2.2)(typescript-eslint@8.67.0(eslint@10.8.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))
+        version: 0.4.1(@eslint/js@9.39.5)(@eslint/json@0.14.0)(@typescript-eslint/parser@8.67.0(eslint@10.8.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.8.1(supports-color@10.2.2))(obsidian@1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6))(supports-color@10.2.2)(typescript-eslint@8.67.0(eslint@10.8.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))
       lefthook:
         specifier: ^2.1.1
         version: 2.1.10
       obsidian:
-        specifier: 1.12.3
-        version: 1.12.3(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
+        specifier: ^1.13.1
+        version: 1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
       rumdl:
         specifier: ^0.1.33
         version: 0.1.96
@@ -2787,8 +2787,8 @@ packages:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
 
-  obsidian@1.12.3:
-    resolution: {integrity: sha512-HxWqe763dOqzXjnNiHmAJTRERN8KILBSqxDSEqbeSr7W8R8Jxezzbca+nz1LiiqXnMpM8lV2jzAezw3CZ4xNUw==}
+  obsidian@1.13.1:
+    resolution: {integrity: sha512-qtTEA2pmhJzhuhJqzbBFRYhpIOqvW+krDYjtFynv66KbxBbumHBlsJfWw3I4jtnK/6fZwbQhCrmmDdRwXmX56w==}
     peerDependencies:
       '@codemirror/state': 6.5.0
       '@codemirror/view': 6.38.6
@@ -5417,7 +5417,7 @@ snapshots:
     dependencies:
       eslint: 10.8.1(supports-color@10.2.2)
 
-  eslint-plugin-obsidianmd@0.4.1(@eslint/js@9.39.5)(@eslint/json@0.14.0)(@typescript-eslint/parser@8.67.0(eslint@10.8.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.8.1(supports-color@10.2.2))(obsidian@1.12.3(@codemirror/state@6.5.0)(@codemirror/view@6.38.6))(supports-color@10.2.2)(typescript-eslint@8.67.0(eslint@10.8.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)):
+  eslint-plugin-obsidianmd@0.4.1(@eslint/js@9.39.5)(@eslint/json@0.14.0)(@typescript-eslint/parser@8.67.0(eslint@10.8.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.8.1(supports-color@10.2.2))(obsidian@1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6))(supports-color@10.2.2)(typescript-eslint@8.67.0(eslint@10.8.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)):
     dependencies:
       '@eslint-community/eslint-plugin-eslint-comments': 4.7.2(eslint@10.8.1(supports-color@10.2.2))
       '@eslint/config-helpers': 0.4.2
@@ -5435,7 +5435,7 @@ snapshots:
       eslint-plugin-no-unsanitized: 4.1.5(eslint@10.8.1(supports-color@10.2.2))
       eslint-plugin-security: 2.1.1
       globals: 14.0.0
-      obsidian: 1.12.3(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
+      obsidian: 1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
       semver: 7.8.5
       typescript: 5.4.5
       typescript-eslint: 8.67.0(eslint@10.8.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)
@@ -6245,7 +6245,7 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.2
 
-  obsidian@1.12.3(@codemirror/state@6.5.0)(@codemirror/view@6.38.6):
+  obsidian@1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6):
     dependencies:
       '@codemirror/state': 6.5.0
       '@codemirror/view': 6.38.6

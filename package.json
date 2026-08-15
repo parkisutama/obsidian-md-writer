@@ -27,7 +27,7 @@
     "eslint": "^10.8.1",
     "eslint-plugin-obsidianmd": "^0.4.1",
     "lefthook": "^2.1.1",
-    "obsidian": "1.12.3",
+    "obsidian": "^1.13.1",
     "rumdl": "^0.1.33",
     "sass": "^1.97.3",
     "stylelint": "^17.3.0",

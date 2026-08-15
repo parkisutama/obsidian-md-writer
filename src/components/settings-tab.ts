@@ -226,7 +226,7 @@ export default class TypewriterModeSettingTab extends PluginSettingTab {
     ];
   }
 
-  display(): void {
+  override display(): void {
     this.containerEl.empty();
     this.containerEl.addClass("tm-settings");
 
