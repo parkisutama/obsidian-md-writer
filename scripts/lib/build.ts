@@ -9,6 +9,7 @@ export interface BuildOptions {
     styles?: string;
   };
   format?: "cjs" | "esm";
+  minify?: boolean;
   outDir?: string;
   rootDir?: string;
   srcDir?: string;
@@ -21,6 +22,7 @@ export async function build({
   entrypoints: { main = "main.ts", styles = "styles/index.scss" } = {},
   outDir = "dist",
   format = "cjs",
+  minify = false,
   stripDebug = false,
 }: BuildOptions = {}) {
   // Create outdir
@@ -46,7 +48,8 @@ export async function build({
     entryPoints: [`${rootDir}/${srcDir}/${main}`],
     outdir: `${rootDir}/${outDir}`,
     bundle: true,
-    minify: true,
+    minify,
+    sourcemap: minify ? false : "inline",
     target: "es2022",
     platform: "browser",
     format: esbuildFormat,
