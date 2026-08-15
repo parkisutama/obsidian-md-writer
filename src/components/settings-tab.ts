@@ -11,7 +11,7 @@ interface TabDefinition {
 export default class TypewriterModeSettingTab extends PluginSettingTab {
   override icon = "type-outline";
 
-  private tm: TypewriterModeLib;
+  private readonly tm: TypewriterModeLib;
   private activeTab = "writingModes";
 
   constructor(app: App, tm: TypewriterModeLib) {

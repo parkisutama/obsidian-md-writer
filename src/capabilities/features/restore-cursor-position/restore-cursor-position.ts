@@ -92,7 +92,10 @@ export default class RestoreCursorPosition extends FeatureToggle {
     await this.tm.saveSettings();
   };
 
-  private onRenameFile = (file: TAbstractFile, oldPath: string): void => {
+  private readonly onRenameFile = (
+    file: TAbstractFile,
+    oldPath: string
+  ): void => {
     const newName = file.path;
     const oldName = oldPath;
     const savedState = this.state[oldName];
@@ -104,7 +107,7 @@ export default class RestoreCursorPosition extends FeatureToggle {
     delete this.state[oldName];
   };
 
-  private onDeleteFile = (file: TAbstractFile): void => {
+  private readonly onDeleteFile = (file: TAbstractFile): void => {
     const fileName = file.path;
     delete this.state[fileName];
   };
@@ -128,7 +131,7 @@ export default class RestoreCursorPosition extends FeatureToggle {
     ]);
   }
 
-  private onFileOpen = (file: TFile | null): void => {
+  private readonly onFileOpen = (file: TFile | null): void => {
     if (!file) {
       return;
     }

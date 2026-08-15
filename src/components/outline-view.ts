@@ -615,7 +615,7 @@ export class OutlineView extends ItemView {
   ): boolean {
     for (const childIndex of entry.childIndices) {
       const child = this.treeEntries[childIndex];
-      if (!child || child.type !== "heading") {
+      if (child?.type !== "heading") {
         continue;
       }
 

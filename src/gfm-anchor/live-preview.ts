@@ -8,7 +8,7 @@ const ANCHOR_SELECTOR = 'a.internal-link, a[data-href*="#"], a[href^="#"]';
 export function createLivePreviewPlugin(app: App, isEnabled: () => boolean) {
   return ViewPlugin.fromClass(
     class {
-      private view: EditorView;
+      private readonly view: EditorView;
       private rafId = 0;
 
       constructor(view: EditorView) {

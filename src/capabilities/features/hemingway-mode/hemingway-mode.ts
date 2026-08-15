@@ -51,7 +51,7 @@ export default class HemingwayMode extends FeatureToggle {
     this.updateStatusBar();
   }
 
-  private keyboardHandler = (event: KeyboardEvent) => {
+  private readonly keyboardHandler = (event: KeyboardEvent) => {
     if (!this.getSettingValue()) {
       return;
     }

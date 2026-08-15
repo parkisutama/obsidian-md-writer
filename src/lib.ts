@@ -55,7 +55,7 @@ export default class TypewriterModeLib {
     persistentBodyClasses: [],
   };
 
-  private editorExtensions: Extension[];
+  private readonly editorExtensions: Extension[];
 
   readonly features: Record<string, Record<string, Feature>>;
   readonly commands: Record<string, AbstractCommand>;

@@ -13,7 +13,7 @@
     "url": "https://github.com/parkisutama/obsidian-md-writer"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.2",
+    "@biomejs/biome": "2.5.8",
     "@codemirror/language": "^6.12.2",
     "@codemirror/state": "6.5.0",
     "@codemirror/view": "6.38.6",
